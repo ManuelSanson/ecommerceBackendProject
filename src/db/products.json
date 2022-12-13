@@ -1,0 +1,123 @@
+[
+   {
+      "id": "2",
+      "title": "Monitor LG",
+      "description": "12 pulgadas",
+      "price": 45,
+      "thumbnails": "Sin imagen",
+      "code": "LGM12",
+      "stock": 5,
+      "category": "Monitores",
+      "status": true
+   },
+   {
+      "id": "3",
+      "title": "Monitor Dell",
+      "description": "12 pulgadas",
+      "price": 60,
+      "thumbnails": "Sin imagen",
+      "code": "DellM12",
+      "stock": 5,
+      "category": "Monitores",
+      "status": true
+   },
+   {
+      "id": "4",
+      "title": "Monitor Dell",
+      "description": "16 pulgadas",
+      "price": 75,
+      "thumbnails": "Sin imagen",
+      "code": "DellM16",
+      "stock": 10,
+      "category": "Monitores",
+      "status": true
+   },
+   {
+      "id": "6",
+      "title": "Teclado LG",
+      "description": "USB",
+      "price": 45,
+      "thumbnails": "Sin imagen",
+      "code": "LGT22",
+      "stock": 5,
+      "category": "Teclados",
+      "status": true
+   },
+   {
+      "id": "7",
+      "title": "Teclado Dell",
+      "description": "Inalambrico",
+      "price": 60,
+      "thumbnails": "Sin imagen",
+      "code": "DellT33",
+      "stock": 8,
+      "category": "Teclados",
+      "status": true
+   },
+   {
+      "id": "8",
+      "title": "Mouse Samsung",
+      "description": "Inalambrico",
+      "price": 50,
+      "thumbnails": "Sin imagen",
+      "code": "SmsgM0",
+      "stock": 2,
+      "category": "Mouse",
+      "status": true
+   },
+   {
+      "id": "9",
+      "title": "Mouse LG",
+      "description": "USB",
+      "price": 45,
+      "thumbnails": "Sin imagen",
+      "code": "LGM0",
+      "stock": 5,
+      "category": "Mouse",
+      "status": true
+   },
+   {
+      "id": "10",
+      "title": "Mouse Dell",
+      "description": "Inalambrico",
+      "price": 60,
+      "thumbnails": "Sin imagen",
+      "code": "DellM0",
+      "stock": 5,
+      "category": "Mouse",
+      "status": true
+   },
+   {
+      "title": "Parlantes SONIC",
+      "description": "Inalambricos",
+      "code": "SonicSpeakers",
+      "price": 40,
+      "status": true,
+      "stock": 10,
+      "category": "Parlantes",
+      "thumbnails": "Sin imagen",
+      "id": 11
+   },
+   {
+      "title": "Parlantes Panavox",
+      "description": "Inalambricos",
+      "code": "PanaSpeakers",
+      "price": 20,
+      "status": true,
+      "stock": 8,
+      "category": "Parlantes",
+      "thumbnails": "Sin imagen",
+      "id": 12
+   },
+   {
+      "title": "Parlantes Sony",
+      "description": "Inalambricos",
+      "code": "SonySpeaker",
+      "price": 50,
+      "status": true,
+      "stock": 2,
+      "category": "Parlantes",
+      "thumbnails": "Sin imagen",
+      "id": 13
+   }
+]
