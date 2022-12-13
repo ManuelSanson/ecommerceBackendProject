@@ -10,14 +10,5 @@
    {
       "products": [],
       "id": 3
-   },
-   {
-      "products": [
-         {
-            "product": 8,
-            "quantity": 1
-         }
-      ],
-      "id": 2
    }
 ]

@@ -59,17 +59,11 @@ export class CartManager {
         const quantity = Number(cartFound.products.length)+1
 
         const productToPush = {product, quantity}
-
-        
-        console.log(cartFound);
-        //console.log(cartFound.products);
         
         if (!cartFound.products.length) {
             cartFound.products.push(productToPush)
         }
 
-        console.log(cartFound);
-        console.log(cartFound.products);
         carts.push(cartFound)
 
         await this.#writeFile(carts)

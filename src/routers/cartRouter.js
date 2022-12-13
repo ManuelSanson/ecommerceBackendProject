@@ -60,9 +60,7 @@ cartsRouter.post('/:cid/product/:pid', async (req, res) => {
         const pid = Number(paramPID)
 
         const cartFound = await cartManager.getCartByID(cid)
-        // console.log(cartFound);
         const product = await productManager.getProductByID(pid)
-        // console.log(product);
                 
         if ((Number.isNaN(cid) || cid < 0) || (Number.isNaN(pid) || pid < 0)) {
             return res.send({success: false, error: 'ID must be a valid number'})
