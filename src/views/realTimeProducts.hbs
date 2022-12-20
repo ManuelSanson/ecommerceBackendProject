@@ -1,0 +1,42 @@
+<div>
+    <h2 class="title">Create a product</h2>
+    <form id="createProductForm">
+        <input type="text" name="title" placeholder="Title">
+        <input type="text" name="description" placeholder="Description">
+        <input type="text" name="code" placeholder="Code">
+        <input type="text" name="price" placeholder="Price">
+        <input type="text" name="stock" placeholder="Stock">
+        <input type="text" name="category" placeholder="Category">
+        <input type="text" name="thumbnails" placeholder="Thumbnails">
+        <input type="submit" value="Create product">
+    </form>
+</div>
+
+<div>
+    <h2 class="title">Delete a product</h2>
+    <form id="deleteProductForm">
+        <input type="text" name="id" placeholder="Product ID">
+        <input type="submit" value="Delete product">
+    </form>
+</div>
+
+<div>
+    <h1 class="title"> Products list (Real Time)</h1>
+
+    <table class="productList">
+        <tr>
+            <th>ID</th>
+            <th>Title</th>
+            <th>Description</th>
+            <th>Price</th>
+            <th>Picture</th>
+        </tr>
+        
+        <tbody id="productsTableBody">
+
+        </tbody>
+        
+    </table> 
+</div>
+
+<script src="js/main.js"></script>
