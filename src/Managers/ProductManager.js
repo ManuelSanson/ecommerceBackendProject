@@ -36,8 +36,8 @@ export class ProductManager {
         return productFound
     }
 
-    async addProduct({title, description, code, price, status, stock, category, thumbnails}) {
-        const newProduct = {title, description, code, price, status, stock, category, thumbnails}
+    async addProduct({title, description, code, price, stock, category, thumbnails}) {
+        const newProduct = {title, description, code, price, stock, category, thumbnails}
 
         const products = await this.getProducts()
 
@@ -48,6 +48,7 @@ export class ProductManager {
         }
 
         newProduct.id = !products.length ? 1 : Number(products[products.length - 1].id) + 1
+        newProduct.status = true
 
         products.push(newProduct)
 

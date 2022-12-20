@@ -54,12 +54,12 @@ productsRouter.get('/:id', async (req, res) => {
 //POST a new product
 productsRouter.post('/', async (req, res) => {
     try {
-        const {title, description, code, price, status, stock, category, thumbnails} = req.body
-        
-        if (!title || !description || !code || !price || !status || !stock || !category) {
+        const {title, description, code, price, stock, category, thumbnails} = req.body
+
+        if (!title || !description || !code || !price || !stock || !category) {
             return res.send({success: false, error: 'These fields are required'})
         } else {
-            const addedProduct = await productManager.addProduct({title, description, code, price, status, stock, category, thumbnails})
+            const addedProduct = await productManager.addProduct({title, description, code, price, stock, category, thumbnails})
 
             res.send({success: true, product: addedProduct})
         }
