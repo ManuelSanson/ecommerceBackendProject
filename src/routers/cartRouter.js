@@ -74,7 +74,6 @@ cartsRouter.post('/:cid/product/:pid', async (req, res) => {
             return res.send({success: false, error: 'Product not found'})
         }
 
-        
         const productToCart = await cartManager.addProductToCart(cid, pid, product)
 
         return res.send({success: true, productToCart})

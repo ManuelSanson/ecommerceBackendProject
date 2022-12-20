@@ -34,6 +34,7 @@ export class CartManager {
         const carts = await this.getCarts()
 
         const cartFound = carts.find(cart => Number(cart.id) === id)
+
         return cartFound
     }
 
@@ -56,17 +57,26 @@ export class CartManager {
         const productByID = await productManager.getProductByID(pid)
 
         const product = Number(productByID.id)
-        const quantity = Number(cartFound.products.length)+1
-
-        const productToPush = {product, quantity}
         
-        if (!cartFound.products.length) {
-            cartFound.products.push(productToPush)
+        const productInCart = cartFound.products.find(p => p.product === cartFound.product)
+        
+        const quantity = productInCart ? productInCart.quantity+1 : 1;
+
+        console.log('productInCart', productInCart);
+        console.log('cartFound.products', cartFound.products);
+
+        if (productInCart) {
+            cartFound.products = cartFound.products.filter(p => p.product !== productInCart.product)
+            console.log(cartFound.products.filter(p => p.p !== productInCart.product)); 
         }
 
-        carts.push(cartFound)
+        const productToPush = {product, quantity}
+        cartFound.products.push(productToPush)
+        
+        const newCarts = carts.filter(cart => cart.id !== cartFound.id)
+        newCarts.push(cartFound)
 
-        await this.#writeFile(carts)
+        this.#writeFile(newCarts)
 
         return cartFound
 
