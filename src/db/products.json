@@ -1,16 +1,5 @@
 [
    {
-      "id": "2",
-      "title": "Monitor LG",
-      "description": "12 pulgadas",
-      "price": 45,
-      "thumbnails": "Sin imagen",
-      "code": "LGM12",
-      "stock": 5,
-      "category": "Monitores",
-      "status": true
-   },
-   {
       "id": "3",
       "title": "Monitor Dell",
       "description": "12 pulgadas",
@@ -119,5 +108,15 @@
       "category": "Parlantes",
       "thumbnails": "Sin imagen",
       "id": 13
+   },
+   {
+      "title": "Macbook",
+      "description": "Macbook Pro",
+      "code": "mcpro",
+      "price": "1200",
+      "stock": "2",
+      "category": "Laptops",
+      "thumbnails": "",
+      "id": 14
    }
 ]
