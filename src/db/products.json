@@ -118,5 +118,16 @@
       "category": "Laptops",
       "thumbnails": "",
       "id": 14
+   },
+   {
+      "title": "Parlante Panavox",
+      "description": "USB",
+      "code": "S-Pana",
+      "price": 12,
+      "stock": 10,
+      "category": "Parlantes",
+      "thumbnails": "Sin imagen",
+      "id": 15,
+      "status": true
    }
 ]
