@@ -52,6 +52,26 @@ cartsRouter.post('/', async (req, res) => {
     }
 })
 
+//PUT a new cart
+cartsRouter.put('/:id', async (req, res) => {
+    try {
+        const {id: paramID} = req.params
+        const id = Number(paramID)
+
+        if (Number.isNaN(id) || id < 0) {
+            return res.send({success: false, error: 'ID must be a valid number'})
+        }
+
+        const cartToReplace = await cartManager.updateCart(id, cartToReplace)
+
+        res.send({success: true, product: cartToReplace})
+
+    } catch (error) {
+        console.log(error);
+        return res.send({success: false, error: 'There is an error'})
+    }
+})
+
 cartsRouter.post('/:cid/product/:pid', async (req, res) => { 
     try {
         const {cid: paramCID} = req.params
@@ -74,7 +94,7 @@ cartsRouter.post('/:cid/product/:pid', async (req, res) => {
             return res.send({success: false, error: 'Product not found'})
         }
 
-        const productToCart = await cartManager.addProductToCart(cid, pid, product)
+        const productToCart = await cartManager.addProductToCart(cid, pid)
 
         return res.send({success: true, productToCart})
     } catch (error) {

@@ -51,34 +51,41 @@ export class CartManager {
         return newCart
     }
 
-    async addProductToCart(cid, pid, productSelected) {
+    async updateCart(id, newData) {
         const carts = await this.getCarts()
-        const cartFound = await this.getCartByID(cid)
-        const productByID = await productManager.getProductByID(pid)
+        const cartIndex = carts.findIndex(cart => Number(cart.id) === id)
 
-        const product = Number(productByID.id)
-        
-        const productInCart = cartFound.products.find(p => p.product === cartFound.product)
-        
-        const quantity = productInCart ? productInCart.quantity+1 : 1;
-
-        console.log('productInCart', productInCart);
-        console.log('cartFound.products', cartFound.products);
-
-        if (productInCart) {
-            cartFound.products = cartFound.products.filter(p => p.product !== productInCart.product)
-            console.log(cartFound.products.filter(p => p.p !== productInCart.product)); 
+        if (cartIndex === -1) {
+            return {error: 'Cart not found'}
         }
 
-        const productToPush = {product, quantity}
-        cartFound.products.push(productToPush)
+        const cart = carts[cartIndex]
         
-        const newCarts = carts.filter(cart => cart.id !== cartFound.id)
-        newCarts.push(cartFound)
+        carts[cartIndex] = { ...cart, ...newData}
 
-        this.#writeFile(newCarts)
+        await this.#writeFile(carts)
 
-        return cartFound
+        return carts[cartIndex]
+    }
 
+    async addProductToCart(cid, pid) {
+        const cart = await this.getCartByID(cid)
+
+        let found = false
+        for (let i = 0; i < cart.products.length; i++) {
+            if (cart.products[i].id == pid) {
+                cart.products[i].quantity++
+                found = true
+                break
+            }            
+        }
+
+        if (!found) {
+            cart.products.push({id: pid, quantity: 1})
+        }
+
+        await this.updateCart(cid, cart)
+
+        return cart
     }
 }
