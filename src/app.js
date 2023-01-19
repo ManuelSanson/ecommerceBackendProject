@@ -3,9 +3,10 @@ import handlebars from 'express-handlebars';
 import __dirname from './__dirname.js'
 import { Server as HttpServer } from 'http';
 import { Server as ioServer } from 'socket.io';
-import { productsRouter, cartsRouter, viewsRouter, productsDBRouter } from './routers/index.js';
+import { productsRouter, cartsRouter, viewsRouter, productsDBRouter, cartsDBRouter } from './routers/index.js';
 import { productManager } from './dao/ManagersFS/index.js';
 import mongoose from 'mongoose';
+import { messageModel } from './dao/models/messageModel.js'
 
 const app = express()
 const httpServer = new HttpServer(app)
@@ -38,10 +39,11 @@ mongoose.connect('mongodb+srv://ManuelSanson:5hRX9r2eJXDzXO8f@cluster0.w3fwwwq.m
 
 app.use('/api/products/', productsDBRouter)
 //app.use('/api/products/', productsRouter)
-app.use('/api/carts/', cartsRouter)
+app.use('/api/carts/', cartsDBRouter)
+//app.use('/api/carts/', cartsRouter)
 app.use('/', viewsRouter)
 
-
+let messages = []
 io.on('connection', async (socket) => {
     console.log(`New client connected, id: ${socket.id}`);
 
@@ -57,14 +59,14 @@ io.on('connection', async (socket) => {
         await productManager.deleteProduct(id)
     })
 
-    
-    socket.on('message', data => {
-        console.log(data);
+    //Chat
+    socket.on('message', async data => {
         messages.push(data) 
-        io.emit('messageLogs', messages) 
+        io.emit('messageLogs', messages)
+        await messageModel.create(messages)
     })
     
-    socket.on('authenticated', user => {
+    socket.on('authenticated', async user => {
         socket.broadcast.emit('newUser', user)
     })
 })

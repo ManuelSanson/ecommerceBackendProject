@@ -14,44 +14,51 @@ socket.on('products', (products) => {
             <td><img height="72px" width="72px" src=${product.thumbnail}/></td>
         </tr>
     `).join(' ')
-    
-    productsTableBody.innerHTML = allProducts
-})
-
-createProductForm.addEventListener('submit', async (e) => {
-    e.preventDefault()
-    const formData = new FormData(createProductForm)
-    
-    const product = {}
-    
-    for (const field of formData.entries()) {
-        product[field[0]] = field[1]
+    if (productsTableBody) {
+        productsTableBody.innerHTML = allProducts
     }
-
-    socket.emit('addProduct', product)
 })
 
-deleteProductForm.addEventListener('submit', async (e) => {
-    e.preventDefault()
-    const formData = new FormData(deleteProductForm)
+if (createProductForm) {
     
-    let id = ''
+    createProductForm.addEventListener('submit', async (e) => {
+        e.preventDefault()
+        const formData = new FormData(createProductForm)
+        
+        const product = {}
+        
+        for (const field of formData.entries()) {
+            product[field[0]] = field[1]
+        }
     
-    for (const field of formData.entries()) {
-        id = field[1];
-    }
+        socket.emit('addProduct', product)
+    })
+}
 
-    socket.emit('deleteProduct', Number(id))
-})
+if (deleteProductForm) {
+    deleteProductForm.addEventListener('submit', async (e) => {
+        e.preventDefault()
+        const formData = new FormData(deleteProductForm)
+        
+        let id = ''
+        
+        for (const field of formData.entries()) {
+            id = field[1];
+        }
+    
+        socket.emit('deleteProduct', Number(id))
+    })
+}
+
 
 let user
 let chatBox = document.getElementById('chatBox')
 
 Swal.fire({
-    title: `What's your name`,
+    title: `Please enter your email`,
     input: 'text',
     inputValidator: value => {
-        return !value && 'Name is required' 
+        return !value && 'Email is required' 
     },
     allowOutsideClick: false
 }).then(result => {
