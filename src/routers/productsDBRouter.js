@@ -16,7 +16,7 @@ productsDBRouter.get('/', async (req, res) => {
         }
 
         if (!limit || limit < 1) {
-            return res.send({success: true, products: allProducts})
+            return res.send({success: true, products: allProducts.slice(0, 10)})
         }
 
         const products = allProducts.slice(0, limit)
@@ -33,7 +33,9 @@ productsDBRouter.get('/:id', async (req, res) => {
     try {
         const {id} = req.params
         
-        const product = await productModel.find({_id: id})
+        const singleProduct = await productModel.find({_id: id})
+        
+        const product = singleProduct[0]
         
         if (!product) {
             return res.send({success: false, error: 'Product not found'})
