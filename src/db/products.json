@@ -129,5 +129,16 @@
       "thumbnails": "Sin imagen",
       "id": 15,
       "status": true
+   },
+   {
+      "title": "Monitor Samsung",
+      "description": "10 pulgadas",
+      "code": "MSMG",
+      "price": "35",
+      "stock": "8",
+      "category": "Monitores",
+      "thumbnails": "-",
+      "id": 16,
+      "status": true
    }
 ]
