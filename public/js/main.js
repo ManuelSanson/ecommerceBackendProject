@@ -43,3 +43,43 @@ deleteProductForm.addEventListener('submit', async (e) => {
 
     socket.emit('deleteProduct', Number(id))
 })
+
+let user
+let chatBox = document.getElementById('chatBox')
+
+Swal.fire({
+    title: `What's your name`,
+    input: 'text',
+    inputValidator: value => {
+        return !value && 'Name is required' 
+    },
+    allowOutsideClick: false
+}).then(result => {
+    user = result.value
+    let txtUsername = document.getElementById('username')
+    txtUsername.innerHTML = user
+    socket.emit('authenticated', user)
+})
+
+chatBox.addEventListener('keyup', event => {
+    if (event.key == 'Enter') {
+        if (chatBox.value.trim().length > 0) {
+            socket.emit('message', {
+                user,
+                message: chatBox.value
+            })
+            chatBox.value = ''
+        }
+    }
+})
+
+socket.on('messageLogs', data => {
+    let log = document.getElementById('messageLogs')
+    let messages = ''
+
+    data.forEach(message => {
+        messages += `<b> ${message.user} </b>: "${message.message}" <br>`
+    })
+
+    log.innerHTML = messages
+})

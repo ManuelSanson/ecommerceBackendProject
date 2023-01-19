@@ -9,7 +9,12 @@ viewsRouter.get('/', async (req, res) => {
     res.render('home', {products})
 })
 
-viewsRouter.get('/realTimeProducts', async (req, res) => {
+viewsRouter.get('/realTimeProducts', (req, res) => {
     
     res.render('realTimeProducts')
+})
+
+viewsRouter.get('/chat', (req, res) => {
+    
+    res.render('liveChat')
 })
