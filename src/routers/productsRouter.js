@@ -1,6 +1,5 @@
 import { Router } from 'express';
 import { productManager } from '../dao/ManagersFS/index.js';
-import { productModel } from '../dao/models/productModel.js'
 
 export const productsRouter = Router()
 
@@ -9,8 +8,7 @@ productsRouter.get('/', async (req, res) => {
     try {
         const { limit } = req.query
 
-        //const allProducts = await productManager.getProducts()
-        const allProducts = await productModel.find()
+        const allProducts = await productManager.getProducts()
 
         if (limit && (!Number(limit) || limit < 0)) {
             return res.send({success: false, error: 'Limit must be a valid number'})
@@ -35,12 +33,11 @@ productsRouter.get('/:id', async (req, res) => {
         const {id: paramID} = req.params
         const id = Number(paramID)
 
-        // if (Number.isNaN(id) || id < 0) {
-        //     return res.send({success: false, error: 'ID must be a valid number'})
-        // }
+        if (Number.isNaN(id) || id < 0) {
+            return res.send({success: false, error: 'ID must be a valid number'})
+        }
         
-        //const product = await productManager.getProductByID(id)
-        const product = await productModel.find({_id: id})
+        const product = await productManager.getProductByID(id)
         
         if (!product) {
             return res.send({success: false, error: 'Product not found'})
@@ -57,17 +54,19 @@ productsRouter.get('/:id', async (req, res) => {
 //POST a new product
 productsRouter.post('/', async (req, res) => {
     try {
-        //const {title, description, code, price, stock, category, thumbnails} = req.body
-        
-        const {title, description, code, price, stock, category, thumbnails} = await productModel.create(req.body)
+        const {title, description, code, price, stock, category, thumbnails} = req.body
 
         if (!title || !description || !code || !price || !stock || !category) {
             return res.send({success: false, error: 'These fields are required'})
-        } else {
-            const addedProduct = await productManager.addProduct({title, description, code, price, stock, category, thumbnails})
+        } 
+        
+        const addedProduct = await productManager.addProduct({title, description, code, price, stock, category, thumbnails})
 
-            res.send({success: true, product: addedProduct})
-        }
+        const products = await productManager.getProducts()
+
+        req.get('io').socket.emit('products', products)
+
+        res.send({success: true, product: addedProduct})
     } catch (error) {
         console.log(error);
         return res.send({success: false, error: 'There is an error'})
@@ -77,21 +76,16 @@ productsRouter.post('/', async (req, res) => {
 //PUT a new product
 productsRouter.put('/:id', async (req, res) => {
     try {
-        //const {id: paramID} = req.params
-        //const id = Number(paramID)
-        const { id } = req.params``
+        const {id: paramID} = req.params
+        const id = Number(paramID)
 
-        // if (Number.isNaN(id) || id < 0) {
-        //     return res.send({success: false, error: 'ID must be a valid number'})
-        // }
+        if (Number.isNaN(id) || id < 0) {
+            return res.send({success: false, error: 'ID must be a valid number'})
+        }
 
-        //const {title, description, code, price, status, stock, category, thumbnails} = req.body
+        const {title, description, code, price, status, stock, category, thumbnails} = req.body
         
-        //const updatedProduct = await productManager.updateProduct(id, {title, description, code, price, status, stock, category, thumbnails})
-
-        const productToReplace = req.body
-
-        const updatedProduct = await productModel.updateOne({_id: id}, productToReplace)
+        const updatedProduct = await productManager.updateProduct(id, {title, description, code, price, status, stock, category, thumbnails})
 
         res.send({success: true, product: updatedProduct})
 
@@ -104,17 +98,14 @@ productsRouter.put('/:id', async (req, res) => {
 //DELETE a product
 productsRouter.delete('/:id', async (req, res) => {
     try {
-        //const {id: paramID} = req.params
-        //const id = Number(paramID)
-        const { id } = req.params
+        const {id: paramID} = req.params
+        const id = Number(paramID)
 
-        // if (Number.isNaN(id) || id < 0) {
-        //     return res.send({success: false, error: 'ID must be a valid number'})
-        // }
+        if (Number.isNaN(id) || id < 0) {
+            return res.send({success: false, error: 'ID must be a valid number'})
+        }
 
-        //const deletedProduct = await productManager.deleteProduct(id)
-
-        const deletedProduct = await productModel.deleteOne({_id: id})
+        const deletedProduct = await productManager.deleteProduct(id)
 
         return res.send({success: true, deleted: deletedProduct})
 
