@@ -54,31 +54,35 @@ if (deleteProductForm) {
 let user
 let chatBox = document.getElementById('chatBox')
 
-Swal.fire({
-    title: `Please enter your email`,
-    input: 'text',
-    inputValidator: value => {
-        return !value && 'Email is required' 
-    },
-    allowOutsideClick: false
-}).then(result => {
-    user = result.value
-    let txtUsername = document.getElementById('username')
-    txtUsername.innerHTML = user
-    socket.emit('authenticated', user)
-})
+if (chatBox) {
+    Swal.fire({
+        title: `Please enter your email`,
+        input: 'text',
+        inputValidator: value => {
+            return !value && 'Email is required' 
+        },
+        allowOutsideClick: false
+    }).then(result => {
+        user = result.value
+        let txtUsername = document.getElementById('username')
+        txtUsername.innerHTML = user
+        socket.emit('authenticated', user)
+    })
+}
 
-chatBox.addEventListener('keyup', event => {
-    if (event.key == 'Enter') {
-        if (chatBox.value.trim().length > 0) {
-            socket.emit('message', {
-                user,
-                message: chatBox.value
-            })
-            chatBox.value = ''
+if (chatBox) {
+    chatBox.addEventListener('keyup', event => {
+        if (event.key == 'Enter') {
+            if (chatBox.value.trim().length > 0) {
+                socket.emit('message', {
+                    user,
+                    message: chatBox.value
+                })
+                chatBox.value = ''
+            }
         }
-    }
-})
+    })
+}
 
 socket.on('messageLogs', data => {
     let log = document.getElementById('messageLogs')
@@ -90,3 +94,9 @@ socket.on('messageLogs', data => {
 
     log.innerHTML = messages
 })
+
+const salutation = document.getElementById('salutation')
+
+if (salutation) {
+    salutation.innerHTML = `Hello, ${email.value}`
+}

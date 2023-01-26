@@ -3,14 +3,38 @@ import handlebars from 'express-handlebars';
 import __dirname from './__dirname.js'
 import { Server as HttpServer } from 'http';
 import { Server as ioServer } from 'socket.io';
-import { productsRouter, cartsRouter, viewsRouter, productsDBRouter, cartsDBRouter } from './routers/index.js';
+import { productsRouter, cartsRouter, viewsRouter, productsDBRouter, cartsDBRouter, sessionRouter } from './routers/index.js';
 import { productManager } from './dao/ManagersFS/index.js';
 import mongoose from 'mongoose';
-import { messageModel } from './dao/models/messageModel.js'
+import { messageModel } from './dao/models/messageModel.js';
+import session from 'express-session';
+import MongoStore from 'connect-mongo';
 
 const app = express()
 const httpServer = new HttpServer(app)
 const io = new ioServer(httpServer)
+
+const mongoUri = 'mongodb+srv://ManuelSanson:5hRX9r2eJXDzXO8f@cluster0.w3fwwwq.mongodb.net/?retryWrites=true&w=majority'
+
+app.use(session({
+    secret: 'manuel',
+    store: MongoStore.create({
+        mongoUrl: mongoUri,
+        mongoOptions: {
+            useNewUrlParser: true,
+            useUnifiedTopology: true,
+        },
+        ttl:100
+    }),
+    resave: true,
+    saveUninitialized: true
+}))
+
+const auth = (req, res, next) => {
+    if (req.session?.user) return next()
+
+    return res.status(401).send('Auth error')
+}
 
 app.engine('hbs', handlebars.engine({
     extname: '.hbs',
@@ -27,7 +51,7 @@ app.use(express.json())
 app.use(express.urlencoded({extended: true}))
 
 mongoose.set('strictQuery', false)
-mongoose.connect('mongodb+srv://ManuelSanson:5hRX9r2eJXDzXO8f@cluster0.w3fwwwq.mongodb.net/?retryWrites=true&w=majority', {dbName: 'ecommerce'}, error => {
+mongoose.connect(mongoUri, {dbName: 'ecommerce'}, error => {
     if (error) {
         console.error('Cannot connect to db', error);
         process.exit()
@@ -37,11 +61,13 @@ mongoose.connect('mongodb+srv://ManuelSanson:5hRX9r2eJXDzXO8f@cluster0.w3fwwwq.m
     httpServer.listen(PORT, () => console.log(`Server running on port ${PORT}`))
 })
 
-app.use('/api/products/', productsDBRouter)
+//Routers
+app.use('/api/products/', auth, productsDBRouter)
 //app.use('/api/products/', productsRouter)
-app.use('/api/carts/', cartsDBRouter)
+app.use('/api/carts/', auth, cartsDBRouter)
 //app.use('/api/carts/', cartsRouter)
 app.use('/', viewsRouter)
+app.use('/session', sessionRouter)
 
 let messages = []
 io.on('connection', async (socket) => {
