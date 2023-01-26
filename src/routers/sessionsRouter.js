@@ -18,13 +18,9 @@ sessionRouter.post('/login', async (req, res) => {
 
     req.session.user = user
 
-    // if (email === 'adminCoder@coder.com' && password === 'adminCod3r123') {
-    //     res.redirect('/realTimeProducts')
-    // }
-    //req.session.rol = (username == 'admin') ? 'admin' : 'user'
-
+    req.session.role = (email === 'adminCoder@coder.com') ? 'admin' : 'user'
+    
     res.redirect('/')
-
 })
 
 sessionRouter.get('/logout', async (req, res) => {

@@ -9,6 +9,7 @@ import mongoose from 'mongoose';
 import { messageModel } from './dao/models/messageModel.js';
 import session from 'express-session';
 import MongoStore from 'connect-mongo';
+import { productModel } from './dao/models/productModel.js';
 
 const app = express()
 const httpServer = new HttpServer(app)
@@ -79,6 +80,7 @@ io.on('connection', async (socket) => {
 
     socket.on('addProduct', async (product) => {
         await productManager.addProduct(product)
+        await productModel.create(product)
     })
     
     socket.on('deleteProduct', async (id) => {
