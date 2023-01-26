@@ -33,7 +33,7 @@ app.use(session({
 const auth = (req, res, next) => {
     if (req.session?.user) return next()
 
-    return res.status(401).send('Auth error')
+    return res.status(401).send(`Auth error. Debes <a href="'/session/login'">iniciar sesión</a>`)
 }
 
 app.engine('hbs', handlebars.engine({

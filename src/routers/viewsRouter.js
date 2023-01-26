@@ -6,7 +6,7 @@ export const viewsRouter = Router()
 const auth = (req, res, next) => {
     if (req.session?.user) return next()
 
-    return res.status(401).send('Auth error')
+    return res.status(401).send(`Auth error. Debes <a href="/session/login">iniciar sesión</a>`)
 }
 
 viewsRouter.get('/', auth, async (req, res) => {
