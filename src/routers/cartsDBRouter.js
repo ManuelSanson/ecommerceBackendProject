@@ -19,7 +19,7 @@ cartsDBRouter.get('/', async (req, res) => {
 //GET cart by ID
 cartsDBRouter.get('/:id', async (req, res) => {
     try {
-        const {id} = req.params
+        const id = new mongoose.Types.ObjectId(req.params.id)
         
         const cart = await cartModel.find({_id: id})
         
@@ -39,7 +39,13 @@ cartsDBRouter.get('/:id', async (req, res) => {
 //POST a cart
 cartsDBRouter.post('/', async (req, res) => {
     try {
-        const newCart = await cartModel.create(req.body)
+        const products = []
+        const carts = await cartModel.find()
+        const newCart = {products}
+
+        newCart.id = !carts.length ? 1 : Number(carts[carts.length - 1].id) + 1
+        
+        await cartModel.create(newCart)
 
         res.send({success: true, newCart})        
     } catch (error) {
@@ -55,7 +61,7 @@ cartsDBRouter.put('/:id', async (req, res) => {
 
         const cartToReplace = req.body
 
-        const updatedCart = await  cartModel.updateOne({_id: id}, cartToReplace)
+        const updatedCart = await cartModel.updateOne({_id: id}, cartToReplace)
 
         res.send({success: true, cart: updatedCart})
 
@@ -65,48 +71,40 @@ cartsDBRouter.put('/:id', async (req, res) => {
     }
 })
 
+//Add product to cart
 cartsDBRouter.post('/:cid/product/:pid', async (req, res) => { 
     try {
-        // const {cid: paramCID} = req.params
-        // const cid = Number(paramCID)
-        // const {pid: paramPID} = req.params
-        // const pid = Number(paramPID)
-        // const {cid} = req.params
-        // const {pid} = req.params
         const cid = new mongoose.Types.ObjectId(req.params.cid)
-        // console.log({cid});
         const pid = new mongoose.Types.ObjectId(req.params.pid)
-        // console.log({pid});
 
-        const cartFound = await await cartModel.find({_id: cid})
-        // console.log({cartFound});
+        const cartFound = await cartModel.find({_id: cid})
         
-        
-        const singleProduct = await productModel.find({_id: pid})
-        
-        const product = singleProduct[0]
-        console.log({product}); 
-        // if ((Number.isNaN(cid) || cid < 0) || (Number.isNaN(pid) || pid < 0)) {
-        //     return res.send({success: false, error: 'ID must be a valid number'})
-        // }
-        
+        const productFound = await productModel.find({_id: pid})
+
         if (!cartFound) {
             return res.send({success: false, error: 'Cart not found'})
         }
         
-        if (!product) {
+        if (!productFound) {
             return res.send({success: false, error: 'Product not found'})
         }
+        
+        let found = false
+        for (let i = 0; i < cartFound[0].products.length; i++) {
+            if (cartFound[0].products[i].id == productFound[0].id) {
+                cartFound[0].products[i].quantity++
+                found = true
+                break
+            }            
+        }
 
-        //const productToCart = await cartManager.addProductToCart(cid, pid)
-        console.log(1, cartFound[0].products);
-        const productToCart = cartFound[0].products.push(product)
-        console.log(2, cartFound[0].products);
+        if (!found) {
+            cartFound[0].products.push({id: productFound[0].id, quantity: 1})
+        }
+        
+        await cartFound[0].save()
 
-        const updateCart = await cartModel.updateOne({_id: cid}, cartFound)
-
-
-        return res.send({success: true, productToCart})
+        return res.send({success: true, cartFound})
     } catch (error) {
         console.log(error);
         res.send({success: false, error: 'There is an error'})

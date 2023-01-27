@@ -7,6 +7,7 @@ const cartSchema = new mongoose.Schema({
         "id": Number,
         "quantity": Number
     }],
+    "id": Number,
 })
 
 export const cartModel = mongoose.model(cartCollection, cartSchema)
