@@ -31,7 +31,7 @@ productsDBRouter.get('/', async (req, res) => {
 //GET products by ID
 productsDBRouter.get('/:id', async (req, res) => {
     try {
-        const {id} = req.params
+        const id = new mongoose.Types.ObjectId(req.params.id)
         
         const singleProduct = await productModel.find({_id: id})
         
@@ -52,10 +52,21 @@ productsDBRouter.get('/:id', async (req, res) => {
 //POST a new product
 productsDBRouter.post('/', async (req, res) => {
     try {
-        
-        const addedProduct = await productModel.create(req.body)
+        const newProduct = req.body
 
-        res.send({success: true, product: addedProduct})
+        const allProducts = await productModel.find()
+
+        const existsCodeInProduct = allProducts.some(p => p.code === newProduct.code)
+
+        if (existsCodeInProduct) {
+            return res.send({success: false, error: 'Code cannot be repeated'})
+        }
+
+        newProduct.id = !allProducts.length ? 1 : Number(allProducts[allProducts.length - 1].id) + 1
+
+        await productModel.create(newProduct)
+
+        res.send({success: true, product: newProduct})
     } catch (error) {
         console.log(error);
         return res.send({success: false, error: 'There is an error'})
@@ -82,7 +93,8 @@ productsDBRouter.put('/:id', async (req, res) => {
 //DELETE a product
 productsDBRouter.delete('/:id', async (req, res) => {
     try {
-        const { id } = req.params
+        //const { id } = req.params
+        const id = new mongoose.Types.ObjectId(req.params.id)
 
         const deletedProduct = await productModel.deleteOne({_id: id})
 
