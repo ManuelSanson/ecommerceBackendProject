@@ -93,7 +93,6 @@ productsDBRouter.put('/:id', async (req, res) => {
 //DELETE a product
 productsDBRouter.delete('/:id', async (req, res) => {
     try {
-        //const { id } = req.params
         const id = new mongoose.Types.ObjectId(req.params.id)
 
         const deletedProduct = await productModel.deleteOne({_id: id})
