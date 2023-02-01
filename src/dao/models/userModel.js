@@ -5,7 +5,10 @@ const userCollection = 'users'
 const userSchema = new mongoose.Schema({
     firstName: String,
     lastName: String,
-    email: String,
+    email: {
+        type: String,
+        unique: true
+    },
     password: String,
 })
 
