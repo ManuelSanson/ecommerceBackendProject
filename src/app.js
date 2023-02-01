@@ -1,6 +1,6 @@
 import express from 'express';
 import handlebars from 'express-handlebars';
-import __dirname from './__dirname.js'
+import __dirname from './utils.js'
 import { Server as HttpServer } from 'http';
 import { Server as ioServer } from 'socket.io';
 import { productsRouter, cartsRouter, viewsRouter, productsDBRouter, cartsDBRouter, sessionRouter } from './routers/index.js';
@@ -10,6 +10,8 @@ import { messageModel } from './dao/models/messageModel.js';
 import session from 'express-session';
 import MongoStore from 'connect-mongo';
 import { productModel } from './dao/models/productModel.js';
+import passport from 'passport';
+import initializePassport from './config/passportConfig.js';
 
 const app = express()
 const httpServer = new HttpServer(app)
@@ -30,6 +32,9 @@ app.use(session({
     resave: true,
     saveUninitialized: true
 }))
+initializePassport()
+app.use(passport.initialize())
+app.use(passport.session())
 
 const auth = (req, res, next) => {
     if (req.session?.user) return next()
