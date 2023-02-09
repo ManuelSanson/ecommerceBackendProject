@@ -1,8 +1,7 @@
-const socket = io()
-
 const productsTableBody = document.getElementById('productsTableBody')
 const createProductForm = document.getElementById('createProductForm')
 const deleteProductForm = document.getElementById('deleteProductForm')
+const socket = io()
 
 socket.on('products', (products) => {
     const allProducts = products.map(product => `
@@ -94,9 +93,3 @@ socket.on('messageLogs', data => {
 
     log.innerHTML = messages
 })
-
-const salutation = document.getElementById('salutation')
-
-if (salutation) {
-    salutation.innerHTML = `Hello, ${email.value}`
-}
