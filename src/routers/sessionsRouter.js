@@ -1,10 +1,25 @@
 import { Router } from "express";
 import passport from "passport";
-import userModel from "../dao/models/userModel.js";
-import { createHash, isValidPassword } from '../utils.js';
 
 export const sessionRouter = Router()
 
+//Choose how to login 
+sessionRouter.get('/logins', async (req, res) => {
+    res.render('logins', {})
+})
+
+//Login with google
+sessionRouter.get('/login-google', passport.authenticate('google', {scope: ['email', 'profile']}), async (req, res) => {})
+
+sessionRouter.get('/googlecallback', passport.authenticate('google', {failureRedirect: '/session/failedlogin'}), async (req, res) => {
+    req.session.user = req.user
+
+    req.session.role = (req.user?.email === 'adminCoder@coder.com') ? 'admin' : 'user'
+    
+    res.redirect('/')
+})
+
+//Login with account
 sessionRouter.get('/login', async (req, res) => {
     res.render('login', {})
 })
@@ -23,21 +38,24 @@ sessionRouter.post('/login', passport.authenticate('/login', {failureRedirect: '
     res.redirect('/')
 })
 
+//Failed login
 sessionRouter.get('/failedlogin', async (req, res) => {
     console.log('failed strategy');
     res.send({error: 'Failed'})
 })
 
+//Logout
 sessionRouter.get('/logout', async (req, res) => {
     req.session.destroy(err => {
         if (err) {
             res.send('No puede loguearse')
         } else {
-        res.redirect('/session/login')
+        res.redirect('/session/logins')
         }
     })
 })
 
+//Register
 sessionRouter.get('/register', async (req, res) => {
     res.render('register', {})
 })
@@ -46,6 +64,8 @@ sessionRouter.post('/create', passport.authenticate('/register', {failureRedirec
     res.redirect('/session/login')
 })
 
+
+//Failed register
 sessionRouter.get('/failedregister', async (req, res) => {
     console.log('failed strategy');
     res.send({error: 'Failed'})

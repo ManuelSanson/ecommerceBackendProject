@@ -2,10 +2,45 @@ import passport from 'passport';
 import local from 'passport-local';
 import userModel from "../dao/models/userModel.js";
 import { createHash, isValidPassword } from '../utils.js';
+import { keys } from './keys.js';
+import GoogleStrategy from 'passport-google-oauth20';
 
 const localStrategy = local.Strategy
 
 const initializePassport = () => {
+
+    passport.use('google', new GoogleStrategy(
+        {
+            clientID: keys.google.clientID,
+            clientSecret: keys.google.clientSecret,
+            callbackURL: 'http://localhost:8080/session/googlecallback',
+            passReqToCallback: true,
+        },
+        async (request, accessToken, refreshToken, profile, done) => {
+            try {
+                const user = await userModel.findOne({email: profile._json.email})
+
+                if (user) {
+                    console.log('Ya existe un usuario registrado con este email');
+                    return done(null, user)
+                }
+                
+                const newUser = {
+                    firstName: profile._json.given_name,
+                    lastName: profile._json.family_name,
+                    email: profile._json.email,
+                    password: ''
+                }
+
+                const result = await userModel.create(newUser)
+
+                return done(null, result)
+            } catch (error) {
+                return done('Error en login ' + error)
+            }
+        }
+    ))
+
     passport.use('/register', new localStrategy(
         {
             passReqToCallback: true, usernameField: 'email'
