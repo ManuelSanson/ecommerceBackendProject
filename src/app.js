@@ -103,7 +103,3 @@ io.on('connection', async (socket) => {
         socket.broadcast.emit('newUser', user)
     })
 })
-
-
-//5hRX9r2eJXDzXO8f
-//ManuelSanson
