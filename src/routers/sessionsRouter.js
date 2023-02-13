@@ -64,9 +64,17 @@ sessionRouter.post('/create', passport.authenticate('/register', {failureRedirec
     res.redirect('/session/login')
 })
 
-
 //Failed register
 sessionRouter.get('/failedregister', async (req, res) => {
     console.log('failed strategy');
     res.send({error: 'Failed'})
+})
+
+//See user
+sessionRouter.get('/current', async (req, res) => {
+    const user = req.session.user
+    if (!user) {
+        res.send('No hay usuario logueado')
+    }
+    res.send(user)
 })
