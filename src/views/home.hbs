@@ -14,8 +14,8 @@
             <th>Price</th>
             <th>Picture</th>
         </tr>
-        {{#if products.length}}
-        {{#each products}}
+        {{#if data.docs.length}}
+        {{#each data.docs}}
         <tr>
             <td>{{this.title}}</td>
             <td>{{this.description}}</td>
@@ -24,7 +24,7 @@
         </tr>
         {{/each}}
         {{/if}}
-    </table> 
+    </table>  
 </main>
 
 <script src="js/main.js"></script>

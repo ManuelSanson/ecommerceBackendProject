@@ -16,7 +16,7 @@ sessionRouter.get('/googlecallback', passport.authenticate('google', {failureRed
 
     req.session.role = (req.user?.email === 'adminCoder@coder.com') ? 'admin' : 'user'
     
-    res.redirect('/')
+    res.redirect('/products')
 })
 
 //Login with account
@@ -35,7 +35,7 @@ sessionRouter.post('/login', passport.authenticate('/login', {failureRedirect: '
 
     req.session.role = (email === 'adminCoder@coder.com') ? 'admin' : 'user'
     
-    res.redirect('/')
+    res.redirect('/products')
 })
 
 //Failed login

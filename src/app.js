@@ -27,7 +27,7 @@ app.use(session({
             useNewUrlParser: true,
             useUnifiedTopology: true,
         },
-        ttl:100
+        ttl:10000
     }),
     resave: true,
     saveUninitialized: true
