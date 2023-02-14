@@ -41,7 +41,7 @@ const initializePassport = () => {
         }
     ))
 
-    passport.use('/register', new localStrategy(
+    passport.use('register', new localStrategy(
         {
             passReqToCallback: true, usernameField: 'email'
         },
@@ -73,7 +73,7 @@ const initializePassport = () => {
         }
     ))
 
-    passport.use('/login', new localStrategy(
+    passport.use('login', new localStrategy(
         { usernameField: 'email' },
         async(username, password, done) => {
             try {

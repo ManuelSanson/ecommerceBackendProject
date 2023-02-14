@@ -24,7 +24,7 @@ sessionRouter.get('/login', async (req, res) => {
     res.render('login', {})
 })
 
-sessionRouter.post('/login', passport.authenticate('/login', {failureRedirect: '/session/failedlogin'}), async (req, res) => {
+sessionRouter.post('/login', passport.authenticate('login', {failureRedirect: '/session/failedlogin'}), async (req, res) => {
     const { email } = req.body
 
     if (!req.user) {
@@ -60,7 +60,7 @@ sessionRouter.get('/register', async (req, res) => {
     res.render('register', {})
 })
 
-sessionRouter.post('/create', passport.authenticate('/register', {failureRedirect: '/session/failedregister'}), async (req, res) => {
+sessionRouter.post('/create', passport.authenticate('register', {failureRedirect: '/session/failedregister'}), async (req, res) => {
     res.redirect('/session/login')
 })
 
