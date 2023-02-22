@@ -2,7 +2,7 @@ import passport from 'passport';
 import local from 'passport-local';
 import userModel from "../dao/models/userModel.js";
 import { createHash, isValidPassword } from '../utils.js';
-import { keys } from './keys.js';
+import { keys } from '../env.js';
 import GoogleStrategy from 'passport-google-oauth20';
 
 const localStrategy = local.Strategy

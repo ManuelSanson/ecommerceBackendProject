@@ -12,17 +12,16 @@ import MongoStore from 'connect-mongo';
 import { productModel } from './dao/models/productModel.js';
 import passport from 'passport';
 import initializePassport from './config/passportConfig.js';
+import {keys} from './env.js'
 
 const app = express()
 const httpServer = new HttpServer(app)
 const io = new ioServer(httpServer)
 
-const mongoUri = 'mongodb+srv://ManuelSanson:5hRX9r2eJXDzXO8f@cluster0.w3fwwwq.mongodb.net/?retryWrites=true&w=majority'
-
 app.use(session({
     secret: 'manuel',
     store: MongoStore.create({
-        mongoUrl: mongoUri,
+        mongoUrl: keys.mongoURI,
         mongoOptions: {
             useNewUrlParser: true,
             useUnifiedTopology: true,
@@ -57,7 +56,7 @@ app.use(express.json())
 app.use(express.urlencoded({extended: true}))
 
 mongoose.set('strictQuery', false)
-mongoose.connect(mongoUri, {dbName: 'ecommerce'}, error => {
+mongoose.connect(keys.mongoURI, {dbName: 'ecommerce'}, error => {
     if (error) {
         console.error('Cannot connect to db', error);
         process.exit()
