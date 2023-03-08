@@ -12,7 +12,7 @@ const productSchema = new mongoose.Schema({
     "stock": Number,
     "category": String,
     "thumbnails": String,
-    "id": Number
+    "id": mongoose.SchemaTypes.ObjectId
 })
 
 productSchema.plugin(mongoosePaginate)

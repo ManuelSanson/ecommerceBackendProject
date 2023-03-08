@@ -1,11 +1,13 @@
 import passport from 'passport';
 import local from 'passport-local';
-import userModel from "../dao/models/userModel.js";
+//import userModel from "../dao/mongo/models/userModel.js";
+import { Users } from '../dao/factory.js';
 import { createHash, isValidPassword } from '../utils.js';
-import { keys } from '../env.js';
+import { keys } from '../keys.js';
 import GoogleStrategy from 'passport-google-oauth20';
 
 const localStrategy = local.Strategy
+const usersService = new Users()
 
 const initializePassport = () => {
 
@@ -18,7 +20,8 @@ const initializePassport = () => {
         },
         async (request, accessToken, refreshToken, profile, done) => {
             try {
-                const user = await userModel.findOne({email: profile._json.email})
+                //const user = await userModel.findOne({email: profile._json.email})
+                const user = await usersService.getUserByEmail(profile._json.email)
 
                 if (user) {
                     console.log('Ya existe un usuario registrado con este email');
@@ -32,7 +35,8 @@ const initializePassport = () => {
                     password: ''
                 }
 
-                const result = await userModel.create(newUser)
+                //const result = await userModel.create(newUser)
+                const result = await usersService.createUser(newUser)
 
                 return done(null, result)
             } catch (error) {
@@ -48,7 +52,8 @@ const initializePassport = () => {
         async (req, username, password, done) => {
             const { firstName, lastName, age, email } = req.body
             try {
-                const user = await userModel.findOne({email: username}).lean().exec()
+                //const user = await userModel.findOne({email: username}).lean().exec()
+                const user = await usersService.getUserByEmail(username)
 
                 if (user) {
                     console.log('Ya existe un usuario registrado con este email');
@@ -63,7 +68,8 @@ const initializePassport = () => {
                     password: createHash(password)
                 }
 
-                const result = await userModel.create(newUser)
+                //const result = await userModel.create(newUser)
+                const result = await usersService.createUser(newUser)
 
                 return done(null, result)
 
@@ -77,7 +83,8 @@ const initializePassport = () => {
         { usernameField: 'email' },
         async(username, password, done) => {
             try {
-                const user = await userModel.findOne({email: username}).lean().exec()
+                //const user = await userModel.findOne({email: username}).lean().exec()
+                const user = await usersService.getUserByEmail(username)
 
                 if (!user) {
                     console.log('No existe este usuario');
@@ -100,7 +107,8 @@ const initializePassport = () => {
         done(null, user._id)
     })
     passport.deserializeUser(async (id, done) => {
-        const user = await userModel.findById(id)
+        //const user = await userModel.findById(id)
+        const user = await usersService.getUserByID(id)
         done(null, user)
     })
 }

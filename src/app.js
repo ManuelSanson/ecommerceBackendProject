@@ -3,16 +3,18 @@ import handlebars from 'express-handlebars';
 import __dirname from './utils.js'
 import { Server as HttpServer } from 'http';
 import { Server as ioServer } from 'socket.io';
-import { productsRouter, cartsRouter, viewsRouter, productsDBRouter, cartsDBRouter, sessionRouter } from './routers/index.js';
+import { productsRouter, cartsRouter, viewsRouter, sessionRouter } from './routers/index.js';
 import { productManager } from './dao/ManagersFS/index.js';
 import mongoose from 'mongoose';
-import { messageModel } from './dao/models/messageModel.js';
 import session from 'express-session';
 import MongoStore from 'connect-mongo';
-import { productModel } from './dao/models/productModel.js';
+import { productModel } from './dao/mongo/models/productModel.js';
 import passport from 'passport';
 import initializePassport from './config/passportConfig.js';
-import {keys} from './env.js'
+import {keys} from './keys.js'
+import { cartsMongoRouter } from './routers/cartsMongoRouter.js';
+import { productsMongoRouter } from './routers/productsMongoRouter.js';
+import { Messages } from './dao/factory.js';
 
 const app = express()
 const httpServer = new HttpServer(app)
@@ -67,13 +69,16 @@ mongoose.connect(keys.mongoURI, {dbName: 'ecommerce'}, error => {
 })
 
 //Routers
-app.use('/api/products/', auth, productsDBRouter)
 //app.use('/api/products/', productsRouter)
-app.use('/api/carts/', auth, cartsDBRouter)
 //app.use('/api/carts/', cartsRouter)
 app.use('/', viewsRouter)
 app.use('/session', sessionRouter)
+app.use('/api/carts/', cartsMongoRouter)
+app.use('/api/products/', productsMongoRouter)
 
+
+//Messages
+const messagesService = new Messages()
 let messages = []
 io.on('connection', async (socket) => {
     console.log(`New client connected, id: ${socket.id}`);
@@ -95,7 +100,7 @@ io.on('connection', async (socket) => {
     socket.on('message', async data => {
         messages.push(data) 
         io.emit('messageLogs', messages)
-        await messageModel.create(messages)
+        await messagesService.createMessage(messages)
     })
     
     socket.on('authenticated', async user => {
