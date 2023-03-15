@@ -1,0 +1,21 @@
+<main>
+    <a href="/session/logout"> Cerrar sesion </a>
+    <br>
+    {{#if user}}
+        <h2>Hi, {{user.firstName}}!</h2>
+    {{/if}}
+    <br>
+    <h1>Cart</h1>
+
+    {{#if cart}}
+    {{productsInCart}}
+    {{productsInCart.quantity}}
+        {{#each productsInCart}}
+            <div>
+                {{this._id.title}}
+            </div>
+        {{/each}}
+    {{/if}}
+
+
+</main>
