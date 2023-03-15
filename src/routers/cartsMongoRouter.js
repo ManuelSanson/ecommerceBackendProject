@@ -1,6 +1,8 @@
 import { Router } from "express";
 import mongoose from "mongoose";
 import { Carts } from '../dao/factory.js';
+import CustomError from "../services/errors/customError.js";
+import { EErrors } from "../services/errors/enums.js";
 
 export const cartsMongoRouter = Router()
 
@@ -26,13 +28,18 @@ cartsMongoRouter.get('/:cid', async (req, res) => {
         const cart = await cartsService.getCartByID(cid)
         
         if (!cart) {
-            return res.send({success: false, error: 'Cart not found'})
+            // return res.send({success: false, error: 'Cart not found'})
+            CustomError.createError({
+                name: 'Get cart by id error',
+                message: 'Cart not found',
+                code: EErrors.INVALID_TYPES_ERROR
+            })
         }
         
         return res.send({success: true, cart})
     } catch (error) {
         console.log(error);
-        return res.send({success: false, error: 'There is an error'})
+        return res.send({success: false, error: 'There is an error'})        
     }
 })
 

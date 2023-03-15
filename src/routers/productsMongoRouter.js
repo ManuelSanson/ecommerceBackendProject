@@ -26,7 +26,12 @@ productsMongoRouter.get('/:pid', async (req, res) => {
         const product = await productsService.getProductByID(pid)
 
         if (!product) {
-            return res.send({success: false, error: 'Product not found'})
+            // return res.send({success: false, error: 'Product not found'})
+            CustomError.createError({
+                name: 'Get product by id error',
+                message: 'Product not found',
+                code: EErrors.INVALID_TYPES_ERROR
+            })
         }
 
         return res.send({success: true, product})
@@ -42,7 +47,12 @@ productsMongoRouter.post('/', async (req, res) => {
         const {title, description, code, price, stock, category, thumbnails} = req.body
 
         if (!title || !description || !code || !price || !stock || !category) {
-            return res.send({success: false, error: 'These fields are required'})
+            // return res.send({success: false, error: 'These fields are required'})
+            CustomError.createError({
+                name: 'Product creation error',
+                message: 'These fields are required',
+                code: EErrors.INVALID_TYPES_ERROR
+            })
         } 
 
         const products = await productsService.getProducts()
