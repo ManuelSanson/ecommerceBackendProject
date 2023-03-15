@@ -12,7 +12,7 @@ export default class Carts {
     }
 
     getCartByID = async (cid) => {
-        const cart = await cartModel.findOne({_id: cid}).populate("products._id").exec()
+        const cart = await cartModel.findOne({_id: cid}).populate("products._id").lean().exec()
 
         return cart
     }
