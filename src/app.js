@@ -15,6 +15,7 @@ import {keys} from './keys.js'
 import { cartsMongoRouter } from './routers/cartsMongoRouter.js';
 import { productsMongoRouter } from './routers/productsMongoRouter.js';
 import { Messages } from './dao/factory.js';
+import { mockProductsRouter } from './routers/mockProductsRouter.js';
 
 const app = express()
 const httpServer = new HttpServer(app)
@@ -75,7 +76,7 @@ app.use('/', viewsRouter)
 app.use('/session', sessionRouter)
 app.use('/api/carts/', cartsMongoRouter)
 app.use('/api/products/', productsMongoRouter)
-
+app.use('/mockingproducts/', mockProductsRouter)
 
 //Messages
 const messagesService = new Messages()
