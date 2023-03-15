@@ -1,5 +1,9 @@
 import { Router } from 'express';
+import mongoose from 'mongoose';
 import { productModel } from '../dao/mongo/models/productModel.js';
+import { Carts } from '../dao/factory.js';
+
+const cartsService = new Carts()
 
 export const viewsRouter = Router()
 
@@ -22,10 +26,11 @@ viewsRouter.get('/products', auth, async (req, res) => {
     const options = {
         limit,
         page,
-        lean: true
+        lean: true,
+        // sortLowToHigh: {price: 1},
+        // sortHighToLow: {price: -1}
     }
 
-    //const products = await productModel.find().lean().exec()
     const data = await productModel.paginate({}, options)
     const user = req.session.user
 
@@ -38,6 +43,20 @@ viewsRouter.get('/products', auth, async (req, res) => {
     }
 
     res.render('home', {data, user, front: {pagination: front_pagination}})
+})
+
+viewsRouter.get('/cart/:cid', auth, async (req, res) => {
+    try {
+        const cid = new mongoose.Types.ObjectId(req.params.cid)
+        const cart = await cartsService.getCartByID(cid)
+
+        const productsInCart = JSON.stringify(cart.products)
+        
+        res.render('cart', {cart, productsInCart})
+    } catch (error) {
+        console.log(error);
+        return res.send({success: false, error: 'There is an error'})
+    }
 })
 
 viewsRouter.get('/realTimeProducts', adminAuth, (req, res) => {
