@@ -17,7 +17,7 @@ import { productsMongoRouter } from './routers/productsMongoRouter.js';
 import { Messages } from './dao/factory.js';
 import { mockProductsRouter } from './routers/mockProductsRouter.js';
 import errorHandler from './middlewares/errors/errorsMiddleware.js';
-import { addLogger } from './config/logger.js';
+import { buildProdLogger } from './config/logger.js';
 
 const app = express()
 const httpServer = new HttpServer(app)
@@ -80,8 +80,9 @@ app.use('/api/carts/', cartsMongoRouter)
 app.use('/api/products/', productsMongoRouter)
 app.use('/mockingproducts/', mockProductsRouter)
 app.use(errorHandler)
-app.use(addLogger)
+//app.use(logger)
 
+const logger = buildProdLogger()
 app.get('/loggerTest', (req, res) => {
     // req.logger.debug('1+1 === 2?')
     // req.logger.http('http error')
@@ -89,8 +90,9 @@ app.get('/loggerTest', (req, res) => {
     // req.logger.warning('Just a warning')
     // req.logger.error('error on db')
     // req.logger.fatal('fatal error')
-
-    res.send('hi')
+    logger.info('text info')
+    //logger.debug('text debug')
+    logger.error('text error')
 })
 
 //Messages
