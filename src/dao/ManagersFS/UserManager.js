@@ -1,5 +1,6 @@
 import fs from 'fs';
 import { userManager } from './index.js';
+import { logger } from '../../config/logger.js';
 
 export class UserManager {
     
@@ -17,7 +18,7 @@ export class UserManager {
                 fs.writeFileSync(this.path, JSON.stringify([]))
             }
         } catch (error) {
-            console.log(error);
+            logger.error(error);
         }
     }
 

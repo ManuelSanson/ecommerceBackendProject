@@ -2,6 +2,7 @@ import { Router } from 'express';
 import { cartManager, productManager } from '../dao/ManagersFS/index.js'
 import CustomError from '../services/errors/customError.js';
 import { EErrors } from '../services/errors/enums.js';
+import { logger } from '../config/logger.js';
 
 export const cartsRouter = Router()
 
@@ -50,7 +51,7 @@ cartsRouter.get('/:id', async (req, res) => {
         return res.send({success: true, cart})
 
     } catch (error) {
-        console.log(error);
+        logger.error(error);
         return res.send({success: false, error: 'There is an error'})
     }
 })
@@ -64,7 +65,7 @@ cartsRouter.post('/', async (req, res) => {
         res.send({success: true, newCart})
         
     } catch (error) {
-        console.log(error);
+        logger.error(error);
         res.send({success: false, error: 'There is an error'})
     }
 })
@@ -89,7 +90,7 @@ cartsRouter.put('/:id', async (req, res) => {
         res.send({success: true, product: cartToReplace})
 
     } catch (error) {
-        console.log(error);
+        logger.error(error);
         return res.send({success: false, error: 'There is an error'})
     }
 })
@@ -135,7 +136,7 @@ cartsRouter.post('/:cid/product/:pid', async (req, res) => {
 
         return res.send({success: true, productToCart})
     } catch (error) {
-        console.log(error);
+        logger.error(error);
         res.send({success: false, error: 'There is an error'})
     }
 })

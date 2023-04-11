@@ -1,5 +1,6 @@
 import { Router } from "express";
 import passport from "passport";
+import { logger } from '../config/logger.js';
 
 export const sessionRouter = Router()
 
@@ -40,7 +41,7 @@ sessionRouter.post('/login', passport.authenticate('login', {failureRedirect: '/
 
 //Failed login
 sessionRouter.get('/failedlogin', async (req, res) => {
-    console.log('failed strategy');
+    logger.error('failed strategy');
     res.send({error: 'Failed'})
 })
 
@@ -66,7 +67,7 @@ sessionRouter.post('/create', passport.authenticate('register', {failureRedirect
 
 //Failed register
 sessionRouter.get('/failedregister', async (req, res) => {
-    console.log('failed strategy');
+    logger.error('failed strategy');
     res.send({error: 'Failed'})
 })
 

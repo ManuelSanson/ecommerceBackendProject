@@ -1,6 +1,7 @@
 import { Router } from "express";
 import mongoose from "mongoose";
 import { Products } from '../dao/factory.js';
+import { logger } from '../config/logger.js';
 
 export const productsMongoRouter = Router()
 
@@ -13,7 +14,7 @@ productsMongoRouter.get('/', async (req, res) => {
 
         res.send({success: true, payload: products })
     } catch (error) {
-        console.log(error);
+        logger.error(error);
         return res.send({success: false, error: 'There is an error'})
     }
 })
@@ -36,7 +37,7 @@ productsMongoRouter.get('/:pid', async (req, res) => {
 
         return res.send({success: true, product})
     } catch (error) {
-        console.log(error);
+        logger.error(error);
         return res.send({success: false, error: 'There is an error'})
     }
 })
@@ -68,7 +69,7 @@ productsMongoRouter.post('/', async (req, res) => {
         
         return res.send({success: true, newProduct})
     } catch (error) {
-        console.log(error);
+        logger.error(error);
         return res.send({success: false, error: 'There is an error'})
     }
 })
@@ -84,7 +85,7 @@ productsMongoRouter.put('/:pid', async (req, res) => {
         res.send({success: true, updatedProduct})
         
     } catch (error) {
-        console.log(error);
+        logger.error(error);
         return res.send({success: false, error: 'There is an error'})
     }
 })
@@ -99,7 +100,7 @@ productsMongoRouter.delete('/:pid', async (req, res) => {
         res.send({success: true, deletedProduct})
         
     } catch (error) {
-        console.log(error);
+        logger.error(error);
         return res.send({success: false, error: 'There is an error'})
     }
 })

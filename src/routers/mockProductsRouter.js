@@ -1,5 +1,6 @@
 import { Router } from "express";
 import { generateProduct } from "../utils.js";
+import { logger } from '../config/logger.js';
 
 export const mockProductsRouter = new Router()
 
@@ -14,7 +15,7 @@ mockProductsRouter.get('/', async (req, res) => {
     
         res.send({status: 'success', payload: products})
     } catch (error) {
-        console.log(error);
+        logger.error(error);
         return res.send({success: false, error: 'There is an error'})
     }
 })

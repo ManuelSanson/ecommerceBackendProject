@@ -1,4 +1,5 @@
 import fs from 'fs';
+import { logger } from '../../config/logger.js';
 
 export class ProductManager {
     
@@ -16,7 +17,7 @@ export class ProductManager {
                 fs.writeFileSync(this.path, JSON.stringify([]))
             }
         } catch (error) {
-            console.log(error);
+            logger.error(error);
         }
     }
 

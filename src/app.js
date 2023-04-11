@@ -17,7 +17,7 @@ import { productsMongoRouter } from './routers/productsMongoRouter.js';
 import { Messages } from './dao/factory.js';
 import { mockProductsRouter } from './routers/mockProductsRouter.js';
 import errorHandler from './middlewares/errors/errorsMiddleware.js';
-import { buildProdLogger } from './config/logger.js';
+import { logger } from './config/logger.js';
 
 const app = express()
 const httpServer = new HttpServer(app)
@@ -63,12 +63,12 @@ app.use(express.urlencoded({extended: true}))
 mongoose.set('strictQuery', false)
 mongoose.connect(keys.mongoURI, {dbName: 'ecommerce'}, error => {
     if (error) {
-        console.error('Cannot connect to db', error);
+        logger.fatal('Cannot connect to db', error);
         process.exit()
     }
     
     const PORT = 8080
-    httpServer.listen(PORT, () => console.log(`Server running on port ${PORT}`))
+    httpServer.listen(PORT, () => logger.info(`Server running on port ${PORT}`))
 })
 
 //Routers
@@ -80,26 +80,23 @@ app.use('/api/carts/', cartsMongoRouter)
 app.use('/api/products/', productsMongoRouter)
 app.use('/mockingproducts/', mockProductsRouter)
 app.use(errorHandler)
-//app.use(logger)
 
-const logger = buildProdLogger()
 app.get('/loggerTest', (req, res) => {
-    // req.logger.debug('1+1 === 2?')
-    // req.logger.http('http error')
-    // req.logger.info('Se llama la pagina ppal')
-    // req.logger.warning('Just a warning')
-    // req.logger.error('error on db')
-    // req.logger.fatal('fatal error')
-    logger.info('text info')
-    //logger.debug('text debug')
-    logger.error('text error')
-})
+    logger.warning('This is a warning message.')
+    logger.error('This is an error message.')
+    logger.info('This is an info message.')
+    logger.http('This is an http message.')
+    logger.debug('This is a debug message.')
+    logger.fatal('This is a fatal message.')
+
+    res.send("Logs generated")
+});
 
 //Messages
 const messagesService = new Messages()
 let messages = []
 io.on('connection', async (socket) => {
-    console.log(`New client connected, id: ${socket.id}`);
+    logger.info(`New client connected, id: ${socket.id}`);
 
     const products = await productManager.getProducts()
     

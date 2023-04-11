@@ -1,5 +1,6 @@
 import { Router } from 'express';
 import { productManager } from '../dao/ManagersFS/index.js';
+import { logger } from '../config/logger.js';
 
 export const productsRouter = Router()
 
@@ -27,7 +28,7 @@ productsRouter.get('/', async (req, res) => {
 
         return res.send({success: true, payload: products})
     } catch (error) {
-        console.log(error);
+        logger.error(error);
         res.send({success: false, error: 'There is an error'})
     }
 })
@@ -62,7 +63,7 @@ productsRouter.get('/:id', async (req, res) => {
         return res.send({success: true, product})
 
     } catch (error) {
-        console.log(error);
+        logger.error(error);
         return res.send({success: false, error: 'There is an error'})
     }
 })
@@ -89,7 +90,7 @@ productsRouter.post('/', async (req, res) => {
 
         res.send({success: true, product: addedProduct})
     } catch (error) {
-        console.log(error);
+        logger.error(error);
         return res.send({success: false, error: 'There is an error'})
     }
 })
@@ -117,7 +118,7 @@ productsRouter.put('/:id', async (req, res) => {
         res.send({success: true, product: updatedProduct})
 
     } catch (error) {
-        console.log(error);
+        logger.error(error);
         return res.send({success: false, error: 'There is an error'})
     }
 })
@@ -142,7 +143,7 @@ productsRouter.delete('/:id', async (req, res) => {
         return res.send({success: true, deleted: deletedProduct})
 
     } catch (error) {
-        console.log(error);
+        logger.error(error);
         return res.send({success: false, error: 'There is an error'})
     }
 })

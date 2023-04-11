@@ -1,10 +1,10 @@
 import passport from 'passport';
 import local from 'passport-local';
-//import userModel from "../dao/mongo/models/userModel.js";
 import { Users } from '../dao/factory.js';
 import { createHash, isValidPassword } from '../utils.js';
 import { keys } from '../keys.js';
 import GoogleStrategy from 'passport-google-oauth20';
+import { logger } from './logger.js';
 
 const localStrategy = local.Strategy
 const usersService = new Users()
@@ -20,11 +20,10 @@ const initializePassport = () => {
         },
         async (request, accessToken, refreshToken, profile, done) => {
             try {
-                //const user = await userModel.findOne({email: profile._json.email})
                 const user = await usersService.getUserByEmail(profile._json.email)
 
                 if (user) {
-                    console.log('Ya existe un usuario registrado con este email');
+                    logger.warning('Ya existe un usuario registrado con este email');
                     return done(null, user)
                 }
                 
@@ -52,11 +51,10 @@ const initializePassport = () => {
         async (req, username, password, done) => {
             const { firstName, lastName, age, email } = req.body
             try {
-                //const user = await userModel.findOne({email: username}).lean().exec()
                 const user = await usersService.getUserByEmail(username)
 
                 if (user) {
-                    console.log('Ya existe un usuario registrado con este email');
+                    logger.warning('Ya existe un usuario registrado con este email');
                     return done(null, false)
                 }
                 
@@ -83,11 +81,10 @@ const initializePassport = () => {
         { usernameField: 'email' },
         async(username, password, done) => {
             try {
-                //const user = await userModel.findOne({email: username}).lean().exec()
                 const user = await usersService.getUserByEmail(username)
 
                 if (!user) {
-                    console.log('No existe este usuario');
+                    logger.error('No existe este usuario');
                     return done(null, false)
                 }
                 

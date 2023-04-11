@@ -1,5 +1,6 @@
-import {cartModel} from '../models/cartModel.js'
-import { productModel } from '../models/productModel.js'
+import {cartModel} from '../models/cartModel.js';
+import { productModel } from '../models/productModel.js';
+import { logger } from '../../../config/logger.js';
 
 export default class Carts {
 
@@ -47,7 +48,7 @@ export default class Carts {
             if (productFound) {
                 cart.products.push({_id: pid, quantity: 1})
             } else {
-                console.log('Product not found');
+                logger.error('Product not found');
             }
         }
 

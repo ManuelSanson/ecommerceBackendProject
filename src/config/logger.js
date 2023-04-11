@@ -1,81 +1,59 @@
-import winston, { createLogger } from 'winston';
+import winston from 'winston';
 
-const customLevelOptions = {
+const logFormat = winston.format.combine(
+    winston.format.timestamp(),
+    winston.format.printf(({
+        timestamp,
+        level,
+        message
+    }) => {
+        return `[${timestamp}] ${level}: ${message}`;
+    })
+);
+
+const productionLogger = winston.createLogger({
     levels: {
-        fatal: 0,
-        error: 1,
-        warning: 2,
-        info: 3,
-        http: 4,
-        debug: 5,
-    }
-}
-
-const logger = winston.createLogger({
+        debug: 0,
+        http: 1,
+        info: 2,
+        warning: 3,
+        error: 4,
+        fatal: 5
+    },
+    level: 'info',
+    format: logFormat,
     transports: [
-        new winston.transports.Console({ 
-            level: "debug",
-            format: winston.format.combine(
-                winston.format.colorize(),
-                winston.format.simple()
-            ) 
-        }),
-        new winston.transports.Console({ 
-            level: "info",
-            format: winston.format.combine(
-                winston.format.colorize(),
-                winston.format.simple()
-            ) 
-        }),
-        new winston.transports.File({ 
+        new winston.transports.Console(),
+        new winston.transports.File({
             filename: "./errors.log",
-            level: "error",
-            format: winston.format.simple()
+            level: 'error'
         })
     ]
-})
+});
 
-export const buildDevLogger = () => {
-    const logger = createLogger({
-        transports: [
-            new winston.transports.Console({ 
-                level: "debug",
-                format: winston.format.combine(
-                    winston.format.colorize(),
-                    winston.format.simple()
-                ) 
-            }),
-            new winston.transports.File({ 
-                filename: "./errors.log",
-                level: "error",
-                format: winston.format.simple()
-            })
-        ]
-    })
+const developmentLogger = winston.createLogger({
+    levels: {
+        debug: 0,
+        http: 1,
+        info: 2,
+        warning: 3,
+        error: 4,
+        fatal: 5
+    },
+    level: 'debug',
+    format: logFormat,
+    transports: [
+        new winston.transports.Console(),
+        new winston.transports.File({
+            filename: "./errors.log",
+            level: 'error'
+        })
+    ]
+});
+
+export let logger;
+if (process.env.NODE_ENV === 'production') {
+    logger = productionLogger;
+} else {
+    logger = developmentLogger;
 }
-
-export const buildProdLogger = () => {
-    const logger = createLogger({
-        transports: [
-            new winston.transports.Console({ 
-                level: "info",
-                format: winston.format.combine(
-                    winston.format.colorize(),
-                    winston.format.simple()
-                ) 
-            }),
-            new winston.transports.File({ 
-                filename: "./errors.log",
-                level: "error",
-                format: winston.format.simple()
-            })
-        ]
-    })
-}
-
-// export const addLogger = (req, res, next) => {
-//     req.logger = logger
-//     req.logger.info(`${req.method} en ${req.url} - ${new Date().toLocaleTimeString()}`)
-
-//     next()
-// }

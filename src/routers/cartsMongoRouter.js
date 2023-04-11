@@ -3,6 +3,7 @@ import mongoose from "mongoose";
 import { Carts } from '../dao/factory.js';
 import CustomError from "../services/errors/customError.js";
 import { EErrors } from "../services/errors/enums.js";
+import {  } from '../config/logger.js';
 
 export const cartsMongoRouter = Router()
 
@@ -14,7 +15,7 @@ cartsMongoRouter.get('/', async (req, res) => {
         const carts = await cartsService.getCarts()
         res.send({success: true, payload: carts })
     } catch (error) {
-        console.log(error);
+        logger.error(error);
         return res.send({success: false, error: 'There is an error'})
     }
     
@@ -38,7 +39,7 @@ cartsMongoRouter.get('/:cid', async (req, res) => {
         
         return res.send({success: true, cart})
     } catch (error) {
-        console.log(error);
+        logger.error(error);
         return res.send({success: false, error: 'There is an error'})        
     }
 })
@@ -53,7 +54,7 @@ cartsMongoRouter.post('/', async (req, res) => {
 
         res.send({success: true, newCart})
     } catch (error) {
-        console.log(error);
+        logger.error(error);
         return res.send({success: false, error: 'There is an error'})
     }
 })
@@ -68,7 +69,7 @@ cartsMongoRouter.put('/:cid', async (req, res) => {
 
         res.send({success: true, updatedCart})
     } catch (error) {
-        console.log(error);
+        logger.error(error);
         return res.send({success: false, error: 'There is an error'})
     }
     
@@ -84,7 +85,7 @@ cartsMongoRouter.post('/:cid/product/:pid', async (req, res) => {
 
         res.send({success: true, productToCart})
     } catch (error) {
-        console.log(error);
+        logger.error(error);
         return res.send({success: false, error: 'There is an error'})
     }
 })
@@ -100,7 +101,7 @@ cartsMongoRouter.put('/:cid/product/:pid', async (req, res) => {
     
         res.send({success: true, updatedProductQuantity})
     } catch (error) {
-        console.log(error);
+        logger.error(error);
         return res.send({success: false, error: 'There is an error'})
     }
 })
@@ -115,7 +116,7 @@ cartsMongoRouter.delete('/:cid/product/:pid', async (req, res) => {
     
         res.send({success: true, deletedProduct})
     } catch (error) {
-        console.log(error);
+        logger.error(error);
         return res.send({success: false, error: 'There is an error'})
     }
 })
@@ -129,7 +130,7 @@ cartsMongoRouter.delete('/:cid', async (req, res) => {
     
         res.send({success: true, deletedProducts})
     } catch (error) {
-        console.log(error);
+        logger.error(error);
         return res.send({success: false, error: 'There is an error'})
     }
 })

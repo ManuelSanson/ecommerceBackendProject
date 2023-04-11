@@ -1,6 +1,7 @@
 import mongoose from 'mongoose';
 import config from '../config/configDotenv.js'
 import { keys } from '../keys.js';
+import { logger } from '../config/logger.js';
 
 export let Carts
 export let Products
@@ -9,7 +10,7 @@ export let Messages
 
 switch (config.persistence) {
     case 'MEMORY':
-        console.log('Memory persistence');
+        logger.info('Memory persistence');
         const { default: CartsMemory} = await import('./memory/cartsMemoryController.js')
         Carts = CartsMemory
         const { default: ProductsMemory} = await import('./memory/productsMemoryController.js')
@@ -20,7 +21,7 @@ switch (config.persistence) {
         Messages = MessagesMemory
         break;
     case 'FILE':
-        console.log('FS persitence');
+        logger.info('FS persitence');
         const { default: CartsFile} = await import('./ManagersFS/CartManager.js')
         Carts = CartsFile
         const { default: ProductsFile} = await import('./ManagersFS/ProductManager.js')
@@ -31,7 +32,7 @@ switch (config.persistence) {
         Messages = MessagesFile
         break;
     default:
-        console.log('Mongo connection');
+        logger.info('Mongo connection');
         mongoose.set('strictQuery', false)
         const connection = mongoose.connect(keys.mongoURI, {dbName: 'ecommerce'}, {useNewUrlParser: true, useUnifiedTopology: true,})
         const { default: CartsMongo} = await import('./mongo/Controllers/cartsMongoController.js')

@@ -1,2 +1,52 @@
 error: text error
 error: text error
+[2023-04-11T01:01:59.763Z] warning: This is a warning message.
+[2023-04-11T01:01:59.768Z] error: This is an error message.
+[2023-04-11T01:01:59.768Z] info: This is an info message.
+[2023-04-11T01:01:59.768Z] http: This is an http message.
+[2023-04-11T01:01:59.769Z] debug: This is a debug message.
+[2023-04-11T01:02:44.407Z] warning: This is a warning message.
+[2023-04-11T01:02:44.411Z] error: This is an error message.
+[2023-04-11T01:02:44.411Z] info: This is an info message.
+[2023-04-11T01:02:44.412Z] http: This is an http message.
+[2023-04-11T01:02:44.413Z] debug: This is a debug message.
+[2023-04-11T01:40:13.346Z] info: Server running on port 8080
+[2023-04-11T01:41:29.306Z] info: Server running on port 8080
+[2023-04-11T01:42:04.624Z] info: Server running on port 8080
+[2023-04-11T01:42:40.677Z] info: Mongo connection
+[2023-04-11T01:42:42.552Z] info: Server running on port 8080
+[2023-04-11T01:43:18.184Z] info: Mongo connection
+[2023-04-11T01:43:20.099Z] info: Server running on port 8080
+[2023-04-11T01:44:09.274Z] info: Mongo connection
+[2023-04-11T01:44:11.669Z] info: Server running on port 8080
+[2023-04-11T01:44:46.272Z] info: Mongo connection
+[2023-04-11T01:44:48.497Z] info: Server running on port 8080
+[2023-04-11T01:45:34.336Z] info: Mongo connection
+[2023-04-11T01:45:36.315Z] info: Server running on port 8080
+[2023-04-11T01:46:26.484Z] info: Mongo connection
+[2023-04-11T01:46:28.493Z] info: Server running on port 8080
+[2023-04-11T01:46:59.014Z] info: Mongo connection
+[2023-04-11T01:47:00.785Z] info: Server running on port 8080
+[2023-04-11T01:48:02.020Z] info: Mongo connection
+[2023-04-11T01:48:03.886Z] info: Server running on port 8080
+[2023-04-11T01:49:10.281Z] info: Mongo connection
+[2023-04-11T01:49:12.213Z] info: Server running on port 8080
+[2023-04-11T01:49:26.654Z] info: Mongo connection
+[2023-04-11T01:49:28.408Z] info: Server running on port 8080
+[2023-04-11T01:50:02.655Z] info: Mongo connection
+[2023-04-11T01:50:05.477Z] info: Server running on port 8080
+[2023-04-11T01:50:50.142Z] info: Mongo connection
+[2023-04-11T01:50:52.505Z] info: Server running on port 8080
+[2023-04-11T01:51:26.106Z] info: Mongo connection
+[2023-04-11T01:51:27.974Z] info: Server running on port 8080
+[2023-04-11T01:51:47.413Z] info: Mongo connection
+[2023-04-11T01:51:49.236Z] info: Server running on port 8080
+[2023-04-11T01:52:46.458Z] info: Mongo connection
+[2023-04-11T01:52:48.729Z] info: Server running on port 8080
+[2023-04-11T01:53:13.620Z] info: undefined
+[2023-04-11T01:53:14.588Z] info: Mongo connection
+[2023-04-11T01:53:16.354Z] info: Server running on port 8080
+[2023-04-11T01:53:28.746Z] info: Mongo connection
+[2023-04-11T01:53:30.414Z] info: Server running on port 8080
+[2023-04-11T01:53:48.154Z] info: Mongo connection
+[2023-04-11T01:53:50.360Z] info: Server running on port 8080
