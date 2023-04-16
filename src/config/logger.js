@@ -23,7 +23,7 @@ const productionLogger = winston.createLogger({
     level: 'info',
     format: logFormat,
     transports: [
-        new winston.transports.Console(),
+        new winston.transports.Console({level: 'info'}),
         new winston.transports.File({
             filename: "./errors.log",
             level: 'error'
@@ -43,7 +43,7 @@ const developmentLogger = winston.createLogger({
     level: 'debug',
     format: logFormat,
     transports: [
-        new winston.transports.Console(),
+        new winston.transports.Console({level: 'info'}),
         new winston.transports.File({
             filename: "./errors.log",
             level: 'error'

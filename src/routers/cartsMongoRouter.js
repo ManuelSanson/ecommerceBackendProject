@@ -3,7 +3,7 @@ import mongoose from "mongoose";
 import { Carts } from '../dao/factory.js';
 import CustomError from "../services/errors/customError.js";
 import { EErrors } from "../services/errors/enums.js";
-import {  } from '../config/logger.js';
+import { logger } from '../config/logger.js';
 
 export const cartsMongoRouter = Router()
 
