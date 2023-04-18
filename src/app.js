@@ -11,13 +11,14 @@ import MongoStore from 'connect-mongo';
 import { productModel } from './dao/mongo/models/productModel.js';
 import passport from 'passport';
 import initializePassport from './config/passportConfig.js';
-import {keys} from './keys.js'
 import { cartsMongoRouter } from './routers/cartsMongoRouter.js';
 import { productsMongoRouter } from './routers/productsMongoRouter.js';
 import { Messages } from './dao/factory.js';
 import { mockProductsRouter } from './routers/mockProductsRouter.js';
 import errorHandler from './middlewares/errors/errorsMiddleware.js';
 import { logger } from './config/logger.js';
+import { resetPasswordRouter } from './routers/resetPasswordRouter.js';
+import config from './config/config.js';
 
 const app = express()
 const httpServer = new HttpServer(app)
@@ -26,7 +27,7 @@ const io = new ioServer(httpServer)
 app.use(session({
     secret: 'manuel',
     store: MongoStore.create({
-        mongoUrl: keys.mongoURI,
+        mongoUrl: config.mongoURI,
         mongoOptions: {
             useNewUrlParser: true,
             useUnifiedTopology: true,
@@ -60,17 +61,6 @@ app.set('io', io)
 app.use(express.json())
 app.use(express.urlencoded({extended: true}))
 
-mongoose.set('strictQuery', false)
-mongoose.connect(keys.mongoURI, {dbName: 'ecommerce'}, error => {
-    if (error) {
-        logger.fatal('Cannot connect to db', error);
-        process.exit()
-    }
-    
-    const PORT = 8080
-    httpServer.listen(PORT, () => logger.info(`Server running on port ${PORT}`))
-})
-
 //Routers
 //app.use('/api/products/', productsRouter)
 //app.use('/api/carts/', cartsRouter)
@@ -79,6 +69,7 @@ app.use('/session', sessionRouter)
 app.use('/api/carts/', cartsMongoRouter)
 app.use('/api/products/', productsMongoRouter)
 app.use('/mockingproducts/', mockProductsRouter)
+app.use('/resetPassword', resetPasswordRouter)
 app.use(errorHandler)
 
 app.get('/loggerTest', (req, res) => {
@@ -91,6 +82,8 @@ app.get('/loggerTest', (req, res) => {
 
     res.send("Logs generated")
 });
+
+httpServer.listen(config.port, () => logger.info(`Server running on port ${config.port}`))
 
 //Messages
 const messagesService = new Messages()

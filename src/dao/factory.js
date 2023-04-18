@@ -1,7 +1,6 @@
 import mongoose from 'mongoose';
-import config from '../config/configDotenv.js'
-import { keys } from '../keys.js';
 import { logger } from '../config/logger.js';
+import config from '../config/config.js';
 
 export let Carts
 export let Products
@@ -34,7 +33,12 @@ switch (config.persistence) {
     default:
         logger.info('Mongo connection');
         mongoose.set('strictQuery', false)
-        const connection = mongoose.connect(keys.mongoURI, {dbName: 'ecommerce'}, {useNewUrlParser: true, useUnifiedTopology: true,})
+        mongoose.connect(config.mongoURI, {useNewUrlParser: true, useUnifiedTopology: true,dbName: config.mongoDBname}, error => {
+            if (error) {
+                logger.fatal('Cannot connect to db', error);
+                process.exit()
+            }
+        })
         const { default: CartsMongo} = await import('./mongo/Controllers/cartsMongoController.js')
         Carts = CartsMongo
         const { default: ProductsMongo} = await import('./mongo/Controllers/productsMongoController.js')
