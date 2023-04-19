@@ -21,13 +21,13 @@ switch (config.persistence) {
         break;
     case 'FILE':
         logger.info('FS persitence');
-        const { default: CartsFile} = await import('./ManagersFS/CartManager.js')
+        const { default: CartsFile} = await import('../DAO/file/cartManager.js')
         Carts = CartsFile
-        const { default: ProductsFile} = await import('./ManagersFS/ProductManager.js')
+        const { default: ProductsFile} = await import('../DAO/file/productManager.js')
         Products = ProductsFile
-        const { default: UsersFile} = await import('./ManagersFS/UserManager.js')
+        const { default: UsersFile} = await import('../DAO/file/userManager.js')
         Users = UsersFile
-        const { default: MessagesFile} = await import('./ManagersFS/MessageManager.js')
+        const { default: MessagesFile} = await import('../DAO/file/messageManager.js')
         Messages = MessagesFile
         break;
     default:
@@ -39,13 +39,13 @@ switch (config.persistence) {
                 process.exit()
             }
         })
-        const { default: CartsMongo} = await import('./mongo/Controllers/cartsMongoController.js')
+        const { default: CartsMongo} = await import('../DAO/mongo/cartsMongo.js')
         Carts = CartsMongo
-        const { default: ProductsMongo} = await import('./mongo/Controllers/productsMongoController.js')
+        const { default: ProductsMongo} = await import('../DAO/mongo/productsMongo.js')
         Products = ProductsMongo
-        const { default: UsersMongo} = await import('./mongo/Controllers/usersMongoController.js')
+        const { default: UsersMongo} = await import('../DAO/mongo/usersMongo.js')
         Users = UsersMongo
-        const { default: MessagesMongo} = await import('./mongo/Controllers/messagesMongoController.js')
+        const { default: MessagesMongo} = await import('../DAO/mongo/messagesMongo.js')
         Messages = MessagesMongo
         break; 
 }

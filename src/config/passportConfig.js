@@ -1,6 +1,6 @@
 import passport from 'passport';
 import local from 'passport-local';
-import { Users } from '../dao/factory.js';
+import { Users } from '../DAO/factory.js';
 import { createHash, isValidPassword } from '../utils.js';
 import { keys } from '../keys.js';
 import GoogleStrategy from 'passport-google-oauth20';

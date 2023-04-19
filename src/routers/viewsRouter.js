@@ -1,7 +1,8 @@
 import { Router } from 'express';
 import mongoose from 'mongoose';
-import { productModel } from '../dao/mongo/models/productModel.js';
-import { Carts } from '../dao/factory.js';
+import { productModel } from '../DAO/mongo/models/productModel.js';
+import { Carts } from '../DAO/factory.js';
+import { logger } from '../config/logger.js';
 
 const cartsService = new Carts()
 
@@ -54,7 +55,7 @@ viewsRouter.get('/cart/:cid', auth, async (req, res) => {
         
         res.render('cart', {cart, productsInCart})
     } catch (error) {
-        console.log(error);
+        logger.error(error);
         return res.send({success: false, error: 'There is an error'})
     }
 })

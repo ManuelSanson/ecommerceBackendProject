@@ -1,8 +1,7 @@
 import fs from 'fs';
-import { userManager } from './index.js';
 import { logger } from '../../config/logger.js';
 
-export class UserManager {
+export default class UserManager {
     
     constructor(path) {
         this.path = path

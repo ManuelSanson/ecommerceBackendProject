@@ -1,4 +1,4 @@
-import { messageModel } from "../models/messageModel.js"
+import { messageModel } from "../mongo/models/messageModel.js";
 
 export default class Carts {
 

@@ -1,8 +1,7 @@
 import fs from 'fs';
-import { messageManager } from './index.js';
-import {  } from '../../config/logger.js';
+import { logger } from '../../config/logger.js';
 
-export class MessageManager {
+export default class MessageManager {
     
     constructor(path) {
         this.path = path

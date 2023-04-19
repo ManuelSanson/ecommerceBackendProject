@@ -1,6 +1,6 @@
-import {cartModel} from '../models/cartModel.js';
-import { productModel } from '../models/productModel.js';
-import { logger } from '../../../config/logger.js';
+import {cartModel} from './models/cartModel.js';
+import { productModel } from './models/productModel.js';
+import { logger } from '../../config/logger.js';
 
 export default class Carts {
 

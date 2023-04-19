@@ -1,8 +1,7 @@
 import fs from 'fs';
-import { productManager } from './index.js';
-import {  } from '../../config/logger.js';
+import { logger } from '../../config/logger.js';
 
-export class CartManager {
+export default class CartManager {
     
     constructor(path) {
         this.path = path

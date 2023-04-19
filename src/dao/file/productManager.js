@@ -1,7 +1,7 @@
 import fs from 'fs';
 import { logger } from '../../config/logger.js';
 
-export class ProductManager {
+export default class ProductManager {
     
     constructor(path) {
         this.path = path

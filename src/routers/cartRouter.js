@@ -1,5 +1,6 @@
 import { Router } from 'express';
-import { cartManager, productManager } from '../dao/ManagersFS/index.js'
+import CartManager from '../DAO/file/cartManager.js';
+import ProductManager from '../DAO/file/productManager.js';
 import CustomError from '../services/errors/customError.js';
 import { EErrors } from '../services/errors/enums.js';
 import { logger } from '../config/logger.js';

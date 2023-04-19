@@ -4,7 +4,8 @@ const messageCollection = 'messages'
 
 const messageSchema = new mongoose.Schema({
     "user": String,
-    "message": String
+    "message": String,
+    "id": mongoose.SchemaTypes.ObjectId,
 })
 
 export const messageModel = mongoose.model(messageCollection, messageSchema)
