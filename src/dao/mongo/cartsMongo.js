@@ -59,12 +59,20 @@ export default class Carts {
 
     updateProductQuantity = async (cid, pid, quantity) => {
         const cart = await cartModel.findOne({_id: cid})
-        const productFound = await productModel.findOne({_id: pid})
         
-        productFound.quantity = quantity
+        const updatedProducts = cart.products.map(product => {
+            if (product._id.toString() === pid.toString()) {
+                return {
+                    ...product, quantity
+                }
+            }
+            return product
+        })
 
+        cart.products = updatedProducts
+        
         await cart.save()
-
+        
         return cart
     }
 
