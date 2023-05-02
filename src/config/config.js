@@ -7,5 +7,6 @@ export default {
     mongoURI: process.env.MONGO_URI,
     mongoDBname: process.env.MONGO_DB_NAME,
     mailUser: process.env.MAIL_USER,
-    mailPass: process.env.MAIL_PASSWORD
+    mailPass: process.env.MAIL_PASSWORD,
+    jwtKey: process.env.JWT_KEY
 }
