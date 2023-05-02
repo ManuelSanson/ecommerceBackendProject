@@ -3,8 +3,8 @@ import { logger } from '../../config/logger.js';
 
 export default class MessageManager {
     
-    constructor(path) {
-        this.path = path
+    constructor() {
+        this.path = "src/db/messages.json"
         this.#init()
     }
 

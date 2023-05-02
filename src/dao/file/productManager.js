@@ -3,8 +3,8 @@ import { logger } from '../../config/logger.js';
 
 export default class ProductManager {
     
-    constructor(path) {
-        this.path = path
+    constructor() {
+        this.path = "src/db/products.json"
         this.#init()
     }
 

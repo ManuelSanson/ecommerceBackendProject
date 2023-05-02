@@ -3,14 +3,15 @@ import { logger } from '../../config/logger.js';
 
 export default class CartManager {
     
-    constructor(path) {
-        this.path = path
+    constructor() {
+        this.path = "src/db/carts.json"
         this.#init()
     }
 
     #init() {
         try {
             const existFile = fs.existsSync(this.path)
+
             if (existFile) {
                 return
             } else {
