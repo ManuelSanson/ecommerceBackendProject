@@ -1,10 +1,10 @@
 import { messageModel } from "../mongo/models/messageModel.js";
 
-export default class Carts {
+export default class Messages {
 
     constructor() {}
 
-    createMessage = async () => {
+    createMessage = async (data) => {
         await messageModel.create(data)
 
         return true
