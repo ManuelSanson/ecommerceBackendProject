@@ -18,6 +18,8 @@ import errorHandler from './middlewares/errors/errorsMiddleware.js';
 import { logger } from './config/logger.js';
 import { resetPasswordRouter } from './routers/resetPasswordRouter.js';
 import config from './config/config.js';
+import swaggerJSDoc from 'swagger-jsdoc';
+import swaggerUiExpress from 'swagger-ui-express';
 
 const app = express()
 const httpServer = new HttpServer(app)
@@ -60,6 +62,17 @@ app.set('io', io)
 app.use(express.json())
 app.use(express.urlencoded({extended: true}))
 
+const specs = swaggerJSDoc({
+    definition: {
+        openapi: '3.0.1',
+        info: {
+            title: "Documentacion del proyecto",
+            description: "Documentacion detallada"
+        }
+    },
+    apis: [`${__dirname}/docs/**/*.yaml`]
+})
+
 //Routers
 //app.use('/api/products/', productsRouter)
 //app.use('/api/carts/', cartsRouter)
@@ -70,6 +83,7 @@ app.use('/api/products/', productsMongoRouter)
 app.use('/mockingproducts/', mockProductsRouter)
 app.use('/resetPassword', resetPasswordRouter)
 app.use(errorHandler)
+app.use('/apidocs', swaggerUiExpress.serve, swaggerUiExpress.setup(specs))
 
 app.get('/loggerTest', (req, res) => {
     logger.warning('This is a warning message.')

@@ -1,0 +1,206 @@
+paths:
+  /api/carts:
+    get:
+      summary: 'Devuelve todos los carts'
+      tags:
+        - Carts
+      responses:
+        "200":
+          description: Los carritos fueron devueltos satisfactoriamente.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#components/schemas/Cart'
+        "500":
+          description: Error interno del server. Query defectuosa o un fallo a la conexion a la DB
+    post:
+      summary: 'Crea un nuevo carrito'
+      tags:
+        - Carts
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#components/requestBodies/createCart'
+      responses:
+        "200":
+          description: El carrito fue creado satisfactoriamente.
+  /api/carts/{cid}:
+    get:
+      summary: Obtiene un cart por su ID
+      tags:
+        - Carts
+      parameters:
+      - name: cid
+        in: path
+        required: true
+        description: ID del carrito solicitado
+        schema:
+          $type: String
+      responses:
+        "200":
+          description: Carrito encontrado
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#components/schemas/Cart'
+    put:
+      summary: Actualiza un carrito a partir del ID
+      tags:
+        - Carts
+      parameters:
+      - name: cid
+        in: path
+        required: true
+        description: ID del carrito solicitado
+        schema:
+          $type: String
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#components/requestBodies/updateCart'
+      responses:
+        "200":
+          description: El carrito fue actualizado satisfactoriamente.
+    delete:
+      summary: Elimina todos los productos en un carrito
+      tags:
+        - Carts
+      parameters:
+      - name: cid
+        in: path
+        required: true
+        description: ID del carrito solicitado
+        schema:
+          $type: String
+      responses:
+        "200":
+          description: Productos eliminados
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#components/schemas/Cart'
+  /api/carts/{cid}/product/{pid}:
+    post:
+      summary: Agrega un producto al carrito a partir del ID del carrito y del producto
+      tags:
+        - Carts
+      parameters:
+      - name: cid
+        in: path
+        required: true
+        description: ID del carrito solicitado
+        schema:
+          $type: String
+      - name: pid
+        in: path
+        required: true
+        description: ID del producto solicitado
+        schema:
+          $type: String
+      responses:
+        "200":
+          description: Producto agregado
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#components/schemas/Cart'
+    put:
+      summary: Actualiza la cantidad de un producto en el carrito a partir del ID del carrito y del producto
+      tags:
+        - Carts
+      parameters:
+      - name: cid
+        in: path
+        required: true
+        description: ID del carrito solicitado
+        schema:
+          $type: String
+      - name: pid
+        in: path
+        required: true
+        description: ID del producto solicitado
+        schema:
+          $type: String
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#components/requestBodies/updateProductQuantity'
+      responses:
+        "200":
+          description: La cantidad del producto fue actualizado satisfactoriamente.
+    delete:
+      summary: Elimina un producto de un carrito a partir del ID del carrito y del producto
+      tags:
+        - Carts
+      parameters:
+      - name: cid
+        in: path
+        required: true
+        description: ID del carrito solicitado
+        schema:
+          $type: String
+      - name: pid
+        in: path
+        required: true
+        description: ID del producto solicitado
+        schema:
+          $type: String
+      responses:
+        "200":
+          description: Producto eliminado del carrito
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#components/schemas/Cart'
+components:
+  schemas:
+    Cart:
+      type: object
+      properties:
+        _id:
+          type: ObjectId
+          description: ID auto generado en mongo
+        products:
+          type: Array
+          description: Conjunto de productos en carrito
+      example:
+        _id: ObjectId("12d03a45e678debe04cc8dfe")
+        products: [{"id": 3, "quantity": 2}]
+  requestBodies:
+    createCart:
+      type: object
+      properties:
+        products:
+          type: Array
+          description: Conjunto de productos en carrito
+      example:
+        products: []
+    updateCart:
+      type: object
+      properties:
+        products:
+          type: Array
+          description: Conjunto de productos en carrito
+      example:
+        products: [{"_id": "63c8a33fd21eb00c8e4ddd38", "quantity": 1}]
+    updateProductQuantity:
+      type: object
+      properties:
+        quantity:
+          type: Number
+          description: Cantidad del producto en carrito
+      example:
+        quantity: 1
+tags: []
