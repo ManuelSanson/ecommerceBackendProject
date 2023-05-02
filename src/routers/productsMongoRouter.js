@@ -1,6 +1,6 @@
 import { Router } from "express";
 import mongoose from "mongoose";
-import { Products } from '../dao/factory.js';
+import { Products } from '../DAO/factory.js';
 import { logger } from '../config/logger.js';
 
 export const productsMongoRouter = Router()
