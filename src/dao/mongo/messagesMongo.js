@@ -5,9 +5,9 @@ export default class Messages {
     constructor() {}
 
     createMessage = async (data) => {
-        await messageModel.create(data)
+        const message = await messageModel.create(data)
 
-        return true
+        return message
     }
 
 }

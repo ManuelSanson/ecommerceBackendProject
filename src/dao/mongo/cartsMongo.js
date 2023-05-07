@@ -19,9 +19,9 @@ export default class Carts {
     }
 
     addCart = async (data) => {
-        await cartModel.create(data)
+        const cart = await cartModel.create(data)
 
-        return true
+        return cart
     }
 
     updateCart = async (cid, newData) => {

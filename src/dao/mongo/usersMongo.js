@@ -5,9 +5,9 @@ export default class Users {
     constructor() {}
 
     createUser = async (data) => {
-        await userModel.create(data)
+        const user = await userModel.create(data)
 
-        return true
+        return user
     }
 
     getUserByEmail = async (email) => {

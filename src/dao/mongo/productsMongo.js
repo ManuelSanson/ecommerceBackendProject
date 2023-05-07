@@ -17,9 +17,9 @@ export default class Products {
     }
 
     addProduct = async (data) => {
-        await productModel.create(data)
+        const product = await productModel.create(data)
 
-        return true
+        return product
     }
 
     updateProduct = async (pid, newData) => {
@@ -30,8 +30,8 @@ export default class Products {
     }
 
     deleteProduct = async (pid) => {
-        await productModel.deleteOne({_id: pid})
+        const deletedProduct = await productModel.deleteOne({_id: pid})
 
-        return true
+        return deletedProduct
     }
 }
