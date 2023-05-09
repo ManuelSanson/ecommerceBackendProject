@@ -1,18 +1,14 @@
 import { Router } from "express";
 import mongoose from "mongoose";
-import { Carts } from '../dao/factory.js';
-import CustomError from "../services/errors/customError.js";
-import { EErrors } from "../services/errors/enums.js";
 import { logger } from '../config/logger.js';
+import { CartService } from "../repository/index.js";
 
-export const cartsMongoRouter = Router()
-
-const cartsService = new Carts()
+export const cartsRouter = Router()
 
 //Get all carts
-cartsMongoRouter.get('/', async (req, res) => {
+cartsRouter.get('/', async (req, res) => {
     try {
-        const carts = await cartsService.getCarts()
+        const carts = await CartService.getCarts()
         res.send({success: true, payload: carts })
     } catch (error) {
         logger.error(error);
@@ -22,19 +18,14 @@ cartsMongoRouter.get('/', async (req, res) => {
 })
 
 //Get carty by ID
-cartsMongoRouter.get('/:cid', async (req, res) => {
+cartsRouter.get('/:cid', async (req, res) => {
     try {
         const cid = new mongoose.Types.ObjectId(req.params.cid)
         
-        const cart = await cartsService.getCartByID(cid)
+        const cart = await CartService.getCartByID(cid)
         
         if (!cart) {
-            // return res.send({success: false, error: 'Cart not found'})
-            CustomError.createError({
-                name: 'Get cart by id error',
-                message: 'Cart not found',
-                code: EErrors.INVALID_TYPES_ERROR
-            })
+            return res.send({success: false, error: 'Cart not found'})
         }
         
         return res.send({success: true, cart})
@@ -45,12 +36,12 @@ cartsMongoRouter.get('/:cid', async (req, res) => {
 })
 
 //Create a new cart
-cartsMongoRouter.post('/', async (req, res) => {
+cartsRouter.post('/', async (req, res) => {
     try {
         const products = []
         const newCart = {products}
 
-        await cartsService.addCart(newCart)
+        await CartService.addCart(newCart)
 
         res.send({success: true, newCart})
     } catch (error) {
@@ -60,12 +51,12 @@ cartsMongoRouter.post('/', async (req, res) => {
 })
 
 //Update a cart
-cartsMongoRouter.put('/:cid', async (req, res) => {
+cartsRouter.put('/:cid', async (req, res) => {
     try {
         const cid = new mongoose.Types.ObjectId(req.params.cid)
 
         const cartToReplace = req.body    
-        const updatedCart = await cartsService.updateCart(cid, cartToReplace)
+        const updatedCart = await CartService.updateCart(cid, cartToReplace)
 
         res.send({success: true, updatedCart})
     } catch (error) {
@@ -76,12 +67,12 @@ cartsMongoRouter.put('/:cid', async (req, res) => {
 })
 
 //Add a product to a cart
-cartsMongoRouter.post('/:cid/product/:pid', async (req, res) => {
+cartsRouter.post('/:cid/product/:pid', async (req, res) => {
     try {
         const cid = new mongoose.Types.ObjectId(req.params.cid)
         const pid = new mongoose.Types.ObjectId(req.params.pid)
 
-        const productToCart = await cartsService.addProductToCart(cid, pid)
+        const productToCart = await CartService.addProductToCart(cid, pid)
 
         res.send({success: true, productToCart})
     } catch (error) {
@@ -91,13 +82,13 @@ cartsMongoRouter.post('/:cid/product/:pid', async (req, res) => {
 })
 
 //Update a product's quantity
-cartsMongoRouter.put('/:cid/product/:pid', async (req, res) => {
+cartsRouter.put('/:cid/product/:pid', async (req, res) => {
     try {
         const cid = new mongoose.Types.ObjectId(req.params.cid)
         const pid = new mongoose.Types.ObjectId(req.params.pid)
         const {quantity} = req.body
-    
-        const updatedProductQuantity = await cartsService.updateProductQuantity(cid, pid, quantity)
+        
+        const updatedProductQuantity = await CartService.updateProductQuantity(cid, pid, quantity)
     
         res.send({success: true, updatedProductQuantity})
     } catch (error) {
@@ -107,12 +98,12 @@ cartsMongoRouter.put('/:cid/product/:pid', async (req, res) => {
 })
 
 //Delete a product from a cart
-cartsMongoRouter.delete('/:cid/product/:pid', async (req, res) => {
+cartsRouter.delete('/:cid/product/:pid', async (req, res) => {
     try {
         const cid = new mongoose.Types.ObjectId(req.params.cid)
         const pid = new mongoose.Types.ObjectId(req.params.pid)
         
-        const deletedProduct = await cartsService.deleteProductFromCart(cid, pid)
+        const deletedProduct = await CartService.deleteProductFromCart(cid, pid)
     
         res.send({success: true, deletedProduct})
     } catch (error) {
@@ -122,11 +113,11 @@ cartsMongoRouter.delete('/:cid/product/:pid', async (req, res) => {
 })
 
 //Delete all products from a cart
-cartsMongoRouter.delete('/:cid', async (req, res) => {
+cartsRouter.delete('/:cid', async (req, res) => {
     try {
         const cid = new mongoose.Types.ObjectId(req.params.cid)
         
-        const deletedProducts = await cartsService.deleteAllProductsFromCart(cid)
+        const deletedProducts = await CartService.deleteAllProductsFromCart(cid)
     
         res.send({success: true, deletedProducts})
     } catch (error) {

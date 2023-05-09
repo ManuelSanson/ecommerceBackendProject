@@ -1,10 +1,8 @@
 import { Router } from 'express';
 import mongoose from 'mongoose';
 import { productModel } from '../DAO/mongo/models/productModel.js';
-import { Carts } from '../DAO/factory.js';
 import { logger } from '../config/logger.js';
-
-const cartsService = new Carts()
+import { CartService } from "../repository/index.js";
 
 export const viewsRouter = Router()
 
@@ -49,7 +47,7 @@ viewsRouter.get('/products', auth, async (req, res) => {
 viewsRouter.get('/cart/:cid', auth, async (req, res) => {
     try {
         const cid = new mongoose.Types.ObjectId(req.params.cid)
-        const cart = await cartsService.getCartByID(cid)
+        const cart = await CartService.getCartByID(cid)
 
         const productsInCart = JSON.stringify(cart.products)
         

@@ -1,147 +1,92 @@
-import { Router } from 'express';
-import productManager from '../DAO/file/productManager.js';
+import { Router } from "express";
+import mongoose from "mongoose";
 import { logger } from '../config/logger.js';
+import { ProductService } from "../repository/index.js";
 
 export const productsRouter = Router()
 
-//GET all products
+//Get all products
 productsRouter.get('/', async (req, res) => {
     try {
-        const { limit } = req.query
+        const products = await ProductService.getProducts()
 
-        const allProducts = await productManager.getProducts()
-
-        if (limit && (!Number(limit) || limit < 0)) {
-            // return res.send({success: false, error: 'Limit must be a valid number'})
-            CustomError.createError({
-                name: 'Products limit error',
-                message: 'Limit must be a valid number',
-                code: EErrors.INVALID_TYPES_ERROR
-            })
-        }
-
-        if (!limit || limit < 1) {
-            return res.send({success: true, products: allProducts})
-        }
-
-        const products = allProducts.slice(0, limit)
-
-        return res.send({success: true, payload: products})
-    } catch (error) {
-        logger.error(error);
-        res.send({success: false, error: 'There is an error'})
-    }
-})
-
-//GET products by ID
-productsRouter.get('/:id', async (req, res) => {
-    try {
-        const {id: paramID} = req.params
-        const id = Number(paramID)
-
-        if (Number.isNaN(id) || id < 0) {
-            // return res.send({success: false, error: 'ID must be a valid number'})
-            CustomError.createError({
-                name: 'Get product by id error',
-                message: 'ID must be a valid number',
-                code: EErrors.INVALID_TYPES_ERROR
-            })
-            
-        }
-        
-        const product = await productManager.getProductByID(id)
-        
-        if (!product) {
-            // return res.send({success: false, error: 'Product not found'})
-            CustomError.createError({
-                name: 'Get product by id error',
-                message: 'Product not found',
-                code: EErrors.INVALID_TYPES_ERROR
-            })
-        }
-        
-        return res.send({success: true, product})
-
+        res.send({success: true, payload: products })
     } catch (error) {
         logger.error(error);
         return res.send({success: false, error: 'There is an error'})
     }
 })
 
-//POST a new product
+//Get a product by ID
+productsRouter.get('/:pid', async (req, res) => {
+    try {
+        const pid = new mongoose.Types.ObjectId(req.params.pid)
+
+        const product = await ProductService.getProductByID(pid)
+
+        if (!product) {
+            return res.send({success: false, error: 'Product not found'})
+        }
+
+        return res.send({success: true, product})
+    } catch (error) {
+        logger.error(error);
+        return res.send({success: false, error: 'There is an error'})
+    }
+})
+
+//Create a product
 productsRouter.post('/', async (req, res) => {
     try {
         const {title, description, code, price, stock, category, thumbnails} = req.body
 
         if (!title || !description || !code || !price || !stock || !category) {
-            // return res.send({success: false, error: 'These fields are required'})
-            CustomError.createError({
-                name: 'Product creation error',
-                message: 'These fields are required',
-                code: EErrors.INVALID_TYPES_ERROR
-            })
+            return res.send({success: false, error: 'These fields are required'})
         } 
+
+        const products = await ProductService.getProducts()
+        const newProduct = {title, description, code, price, stock, category, thumbnails}
         
-        const addedProduct = await productManager.addProduct({title, description, code, price, stock, category, thumbnails})
+        const existsCodeInProduct = products.some(p => p.code === newProduct.code)
 
-        const products = await productManager.getProducts()
+        if (existsCodeInProduct) {
+            return res.send({success: false, error: 'Code cannot be repeated'})
+        }
 
-        req.get('io').socket.emit('products', products)
-
-        res.send({success: true, product: addedProduct})
+        await ProductService.addProduct(newProduct )
+        
+        return res.send({success: true, newProduct})
     } catch (error) {
         logger.error(error);
         return res.send({success: false, error: 'There is an error'})
     }
 })
 
-//PUT a new product
-productsRouter.put('/:id', async (req, res) => {
+//Update a product
+productsRouter.put('/:pid', async (req, res) => {
     try {
-        const {id: paramID} = req.params
-        const id = Number(paramID)
+        const pid = new mongoose.Types.ObjectId(req.params.pid)
 
-        if (Number.isNaN(id) || id < 0) {
-            // return res.send({success: false, error: 'ID must be a valid number'})
-            CustomError.createError({
-                name: 'Get product by id error',
-                message: 'ID must be a valid number',
-                code: EErrors.INVALID_TYPES_ERROR
-            })
+        const productToReplace = req.body    
+        const updatedProduct = await ProductService.updateProduct(pid, productToReplace)
 
-        }
-
-        const {title, description, code, price, status, stock, category, thumbnails} = req.body
+        res.send({success: true, updatedProduct})
         
-        const updatedProduct = await productManager.updateProduct(id, {title, description, code, price, status, stock, category, thumbnails})
-
-        res.send({success: true, product: updatedProduct})
-
     } catch (error) {
         logger.error(error);
         return res.send({success: false, error: 'There is an error'})
     }
 })
 
-//DELETE a product
-productsRouter.delete('/:id', async (req, res) => {
+//Delete a product
+productsRouter.delete('/:pid', async (req, res) => {
     try {
-        const {id: paramID} = req.params
-        const id = Number(paramID)
+        const pid = new mongoose.Types.ObjectId(req.params.pid)
+        
+        const deletedProduct = await ProductService.deleteProduct(pid)
 
-        if (Number.isNaN(id) || id < 0) {
-            // return res.send({success: false, error: 'ID must be a valid number'})
-            CustomError.createError({
-                name: 'Get product by id error',
-                message: 'ID must be a valid number',
-                code: EErrors.INVALID_TYPES_ERROR
-            })
-        }
-
-        const deletedProduct = await productManager.deleteProduct(id)
-
-        return res.send({success: true, deleted: deletedProduct})
-
+        res.send({success: true, deletedProduct})
+        
     } catch (error) {
         logger.error(error);
         return res.send({success: false, error: 'There is an error'})

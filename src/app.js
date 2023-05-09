@@ -3,18 +3,18 @@ import handlebars from 'express-handlebars';
 import __dirname from './utils.js'
 import { Server as HttpServer } from 'http';
 import { Server as ioServer } from 'socket.io';
-import { productsRouter, cartsRouter, viewsRouter, sessionRouter } from './routers/index.js';
+import { cartsRouter } from './routers/cartsRouter.js';
+import { productsRouter } from './routers/productsRouter.js';
+import { viewsRouter } from './routers/viewsRouter.js';
+import { sessionRouter } from './routers/sessionsRouter.js';
 import productManager from './DAO/file/productManager.js';
 import session from 'express-session';
 import MongoStore from 'connect-mongo';
 import { productModel } from './DAO/mongo/models/productModel.js';
 import passport from 'passport';
 import initializePassport from './config/passportConfig.js';
-import { cartsMongoRouter } from './routers/cartsMongoRouter.js';
-import { productsMongoRouter } from './routers/productsMongoRouter.js';
 import { Messages } from './DAO/factory.js';
 import { mockProductsRouter } from './routers/mockProductsRouter.js';
-import errorHandler from './middlewares/errors/errorsMiddleware.js';
 import { logger } from './config/logger.js';
 import { resetPasswordRouter } from './routers/resetPasswordRouter.js';
 import config from './config/config.js';
@@ -74,15 +74,12 @@ const specs = swaggerJSDoc({
 })
 
 //Routers
-//app.use('/api/products/', productsRouter)
-//app.use('/api/carts/', cartsRouter)
 app.use('/', viewsRouter)
 app.use('/session', sessionRouter)
-app.use('/api/carts/', cartsMongoRouter)
-app.use('/api/products/', productsMongoRouter)
+app.use('/api/carts/', cartsRouter)
+app.use('/api/products/', productsRouter)
 app.use('/mockingproducts/', mockProductsRouter)
 app.use('/resetPassword', resetPasswordRouter)
-app.use(errorHandler)
 app.use('/apidocs', swaggerUiExpress.serve, swaggerUiExpress.setup(specs))
 
 app.get('/loggerTest', (req, res) => {
