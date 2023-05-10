@@ -55,10 +55,10 @@ let chatBox = document.getElementById('chatBox')
 
 if (chatBox) {
     Swal.fire({
-        title: `Please enter your email`,
+        title: `Please enter your name`,
         input: 'text',
         inputValidator: value => {
-            return !value && 'Email is required' 
+            return !value && 'Name is required' 
         },
         allowOutsideClick: false
     }).then(result => {
