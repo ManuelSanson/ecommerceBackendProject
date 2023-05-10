@@ -15,22 +15,34 @@ const auth = (req, res, next) => {
 const adminAuth = (req, res, next) => {
     if (req.session.role == 'admin') return next()
 
-    return res.status(401).send(`Auth error. Solo los admin puede ver esta seccion`)
+    return res.status(401).send(`Auth error. Solo los admin pueden ver esta seccion`)
 }
 
 viewsRouter.get('/products', auth, async (req, res) => {
     const limit = req.query?.limit || 10
     const page = req.query?.page || 1
+    const field = req.query.query ? req.query.query.split(":")[0] : undefined
+    const search = req.query.query ? req.query.query.split(":")[1] : undefined
+    const sortingField = req.query.sortBy ? req.query.sortBy.split(":")[0] : undefined
+    const order = req.query.sortBy ? req.query.sortBy.split(":")[1] : undefined
+
+    const regex = new RegExp(search, 'i')
+    const filter = search && field ? { [field]: regex } : {}
+    
+    const sort = sortingField && order ? { [sortingField]: order === 'desc' ? -1 : 1 } : {}
 
     const options = {
         limit,
         page,
         lean: true,
-        // sortLowToHigh: {price: 1},
-        // sortHighToLow: {price: -1}
+        collation: {
+            locale: 'en',
+            strength: 2
+        },
+        sort
     }
 
-    const data = await productModel.paginate({}, options)
+    const data = await productModel.paginate(filter, options)
     const user = req.session.user
 
     const front_pagination = []
