@@ -3,22 +3,11 @@ import mongoose from 'mongoose';
 import { productModel } from '../DAO/mongo/models/productModel.js';
 import { logger } from '../config/logger.js';
 import { CartService } from "../repository/index.js";
+import { loginAuth, adminAuth, userAuth } from '../middlewares/authorizations.js'
 
 export const viewsRouter = Router()
 
-const auth = (req, res, next) => {
-    if (req.session?.user) return next()
-
-    return res.status(401).send(`Auth error. Debes <a href="/session/logins">iniciar sesión</a>`)
-}
-
-const adminAuth = (req, res, next) => {
-    if (req.session.role == 'admin') return next()
-
-    return res.status(401).send(`Auth error. Solo los admin pueden ver esta seccion`)
-}
-
-viewsRouter.get('/products', auth, async (req, res) => {
+viewsRouter.get('/products', loginAuth, async (req, res) => {
     const limit = req.query?.limit || 10
     const page = req.query?.page || 1
     const field = req.query.query ? req.query.query.split(":")[0] : undefined
@@ -56,7 +45,7 @@ viewsRouter.get('/products', auth, async (req, res) => {
     res.render('home', {data, user, front: {pagination: front_pagination}})
 })
 
-viewsRouter.get('/cart/:cid', auth, async (req, res) => {
+viewsRouter.get('/cart/:cid', loginAuth, async (req, res) => {
     try {
         const cid = new mongoose.Types.ObjectId(req.params.cid)
         const cart = await CartService.getCartByID(cid)
@@ -74,6 +63,6 @@ viewsRouter.get('/realTimeProducts', adminAuth, (req, res) => {
     res.render('realTimeProducts')
 })
 
-viewsRouter.get('/chat', auth, (req, res) => {
+viewsRouter.get('/chat', userAuth, (req, res) => {
     res.render('liveChat')
 })

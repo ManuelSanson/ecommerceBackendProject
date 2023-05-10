@@ -77,5 +77,11 @@ sessionRouter.get('/current', async (req, res) => {
     if (!user) {
         res.send('No hay usuario logueado')
     }
-    res.send(user)
+
+    const userDetails = {
+        firstName: user.firstName,
+        email: user.email
+    }
+
+    res.send(userDetails)
 })

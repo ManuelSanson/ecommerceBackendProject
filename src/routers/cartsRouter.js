@@ -2,6 +2,7 @@ import { Router } from "express";
 import mongoose from "mongoose";
 import { logger } from '../config/logger.js';
 import { CartService } from "../repository/index.js";
+import { userAuth } from "../middlewares/authorizations.js"
 
 export const cartsRouter = Router()
 
@@ -67,7 +68,7 @@ cartsRouter.put('/:cid', async (req, res) => {
 })
 
 //Add a product to a cart
-cartsRouter.post('/:cid/product/:pid', async (req, res) => {
+cartsRouter.post('/:cid/product/:pid', userAuth, async (req, res) => {
     try {
         const cid = new mongoose.Types.ObjectId(req.params.cid)
         const pid = new mongoose.Types.ObjectId(req.params.pid)

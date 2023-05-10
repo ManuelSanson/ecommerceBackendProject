@@ -2,6 +2,7 @@ import { Router } from "express";
 import mongoose from "mongoose";
 import { logger } from '../config/logger.js';
 import { ProductService } from "../repository/index.js";
+import { adminAuth } from "../middlewares/authorizations.js";
 
 export const productsRouter = Router()
 
@@ -36,7 +37,7 @@ productsRouter.get('/:pid', async (req, res) => {
 })
 
 //Create a product
-productsRouter.post('/', async (req, res) => {
+productsRouter.post('/', adminAuth, async (req, res) => {
     try {
         const {title, description, code, price, stock, category, thumbnails} = req.body
 
@@ -63,7 +64,7 @@ productsRouter.post('/', async (req, res) => {
 })
 
 //Update a product
-productsRouter.put('/:pid', async (req, res) => {
+productsRouter.put('/:pid', adminAuth, async (req, res) => {
     try {
         const pid = new mongoose.Types.ObjectId(req.params.pid)
 
@@ -79,7 +80,7 @@ productsRouter.put('/:pid', async (req, res) => {
 })
 
 //Delete a product
-productsRouter.delete('/:pid', async (req, res) => {
+productsRouter.delete('/:pid', adminAuth, async (req, res) => {
     try {
         const pid = new mongoose.Types.ObjectId(req.params.pid)
         

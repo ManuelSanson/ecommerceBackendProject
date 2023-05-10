@@ -7,10 +7,8 @@ import { cartsRouter } from './routers/cartsRouter.js';
 import { productsRouter } from './routers/productsRouter.js';
 import { viewsRouter } from './routers/viewsRouter.js';
 import { sessionRouter } from './routers/sessionsRouter.js';
-import productManager from './DAO/file/productManager.js';
 import session from 'express-session';
 import MongoStore from 'connect-mongo';
-import { productModel } from './DAO/mongo/models/productModel.js';
 import passport from 'passport';
 import initializePassport from './config/passportConfig.js';
 import { Messages } from './DAO/factory.js';
@@ -20,6 +18,7 @@ import { resetPasswordRouter } from './routers/resetPasswordRouter.js';
 import config from './config/config.js';
 import swaggerJSDoc from 'swagger-jsdoc';
 import swaggerUiExpress from 'swagger-ui-express';
+import { ProductService } from './repository/index.js';
 
 const app = express()
 const httpServer = new HttpServer(app)
@@ -41,12 +40,6 @@ app.use(session({
 initializePassport()
 app.use(passport.initialize())
 app.use(passport.session())
-
-const auth = (req, res, next) => {
-    if (req.session?.user) return next()
-
-    return res.status(401).send(`Auth error. Debes <a href="/session/logins">iniciar sesión</a>`)
-}
 
 app.engine('hbs', handlebars.engine({
     extname: '.hbs',
@@ -101,17 +94,17 @@ let messages = []
 io.on('connection', async (socket) => {
     logger.info(`New client connected, id: ${socket.id}`);
 
-    const products = await productManager.getProducts()
+    const products = await ProductService.getProducts()
     
     io.sockets.emit('products', products)
 
     socket.on('addProduct', async (product) => {
-        await productManager.addProduct(product)
-        await productModel.create(product)
+        await ProductService.addProduct(product)
+        await ProductService.create(product)
     })
     
     socket.on('deleteProduct', async (id) => {
-        await productManager.deleteProduct(id)
+        await ProductService.deleteProduct(id)
     })
 
     //Chat
