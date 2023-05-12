@@ -6,6 +6,7 @@ export let Carts
 export let Products
 export let Users
 export let Messages
+export let Tickets
 
 switch (config.persistence) {
     case 'MEMORY':
@@ -29,6 +30,8 @@ switch (config.persistence) {
         Users = UsersFile
         const { default: MessagesFile} = await import('../DAO/file/messageManager.js')
         Messages = MessagesFile
+        const { default: TicketsFile} = await import('../DAO/file/ticketManager.js')
+        Tickets = TicketsFile
         break;
     default:
         logger.info('Mongo connection');
@@ -47,5 +50,7 @@ switch (config.persistence) {
         Users = UsersMongo
         const { default: MessagesMongo} = await import('../DAO/mongo/messagesMongo.js')
         Messages = MessagesMongo
+        const { default: TicketsMongo} = await import('../DAO/mongo/ticketsMongo.js')
+        Tickets = TicketsMongo
         break; 
 }

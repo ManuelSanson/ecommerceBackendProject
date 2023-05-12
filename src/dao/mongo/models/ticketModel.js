@@ -5,9 +5,8 @@ const ticketCollection = 'tickets'
 const ticketSchema = new mongoose.Schema({
     "code": {type: String, unique: true},
     "purchaseDateTime": Date,
-    "status": Boolean,
     "amount": Number,
-    "purchase": String,
+    "purchaser": String,
     "id": mongoose.SchemaTypes.ObjectId
 })
 

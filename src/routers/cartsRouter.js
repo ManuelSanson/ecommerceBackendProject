@@ -1,8 +1,9 @@
 import { Router } from "express";
 import mongoose from "mongoose";
 import { logger } from '../config/logger.js';
-import { CartService } from "../repository/index.js";
-import { userAuth } from "../middlewares/authorizations.js"
+import { CartService, ProductService, TicketService } from "../repository/index.js";
+import { userAuth } from "../middlewares/authorizations.js";
+import bcrypt from 'bcrypt';
 
 export const cartsRouter = Router()
 
@@ -125,5 +126,64 @@ cartsRouter.delete('/:cid', async (req, res) => {
         logger.error(error);
         return res.send({success: false, error: 'There is an error'})
     }
+})
+
+//Purchase
+cartsRouter.post('/:cid/purchase', async (req, res) => {
+    const cid = new mongoose.Types.ObjectId(req.params.cid)
+
+    const cart = await CartService.getCartByID(cid)
+        
+    if (!cart) {
+        return res.send({success: false, error: 'Cart not found'})
+    }
+
+    const productsToUpdate = [];
+    const productsNotAvailable = [];    
+
+    for (const product of cart.products) {
+        const foundProduct = await ProductService.getProductByID(product._id)
+
+        if (foundProduct[0].stock >= product.quantity) {
+            productsToUpdate.push({
+            id: foundProduct[0]._id,
+            stock: foundProduct[0].stock - product.quantity,
+            });
+        } else {
+            productsNotAvailable.push(foundProduct[0]._id);
+        }
+    }
+
+    if (productsNotAvailable.length === 0) {
+        for (const product of productsToUpdate) {
+            await ProductService.updateProduct(product.id, { stock: product.stock });
+        }
+    }
+
+    if (productsNotAvailable.length > 0) {
+        res.json({ success: false, productsNotAvailable });
+
+        return
+    }
+
+    const user = req.session.user
+    
+    let total = []
+    for (const product of cart.products) {
+        const foundProduct = await ProductService.getProductByID(product._id)
+        const result = foundProduct[0].price * product.quantity
+        total.push(result)
+    }
+
+    const totalPrice = total.reduce((acc, val) => acc + val, 0)
+
+    const purchaseTicket = await TicketService.createTicket({
+        code: bcrypt.genSaltSync(10),
+        purchaseDateTime: new Date().toLocaleDateString(),
+        amount: totalPrice,
+        purchaser: user.email
+    })
+
+    res.send(purchaseTicket)
 })
 
