@@ -37,8 +37,8 @@ export default class ProductManager {
         return productFound
     }
 
-    async addProduct({title, description, code, price, stock, category, thumbnails}) {
-        const newProduct = {title, description, code, price, stock, category, thumbnails}
+    async addProduct({title, description, code, price, stock, category, thumbnails, owner}) {
+        const newProduct = {title, description, code, price, stock, category, thumbnails, owner}
 
         const products = await this.getProducts()
 

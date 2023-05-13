@@ -12,7 +12,10 @@ const productSchema = new mongoose.Schema({
     "stock": Number,
     "category": String,
     "thumbnails": String,
-    "id": mongoose.SchemaTypes.ObjectId
+    "owner": {
+        type: String,
+        default: 'admin'
+    }
 })
 
 productSchema.plugin(mongoosePaginate)
