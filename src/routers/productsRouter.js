@@ -2,7 +2,7 @@ import { Router } from "express";
 import mongoose from "mongoose";
 import { logger } from '../config/logger.js';
 import { ProductService } from "../repository/index.js";
-import { adminAuth } from "../middlewares/authorizations.js";
+import { premiumUserAdminAuth } from "../middlewares/authorizations.js";
 
 export const productsRouter = Router()
 
@@ -37,16 +37,16 @@ productsRouter.get('/:pid', async (req, res) => {
 })
 
 //Create a product
-productsRouter.post('/', adminAuth, async (req, res) => {
+productsRouter.post('/', premiumUserAdminAuth, async (req, res) => {
     try {
-        const {title, description, code, price, stock, category, thumbnails} = req.body
+        const {title, description, code, price, stock, category, thumbnails, owner} = req.body
 
         if (!title || !description || !code || !price || !stock || !category) {
             return res.send({success: false, error: 'These fields are required'})
         } 
 
         const products = await ProductService.getProducts()
-        const newProduct = {title, description, code, price, stock, category, thumbnails}
+        const newProduct = {title, description, code, price, stock, category, thumbnails, owner}
         
         const existsCodeInProduct = products.some(p => p.code === newProduct.code)
 
@@ -54,7 +54,7 @@ productsRouter.post('/', adminAuth, async (req, res) => {
             return res.send({success: false, error: 'Code cannot be repeated'})
         }
 
-        await ProductService.addProduct(newProduct )
+        await ProductService.addProduct(newProduct)
         
         return res.send({success: true, newProduct})
     } catch (error) {
@@ -64,14 +64,29 @@ productsRouter.post('/', adminAuth, async (req, res) => {
 })
 
 //Update a product
-productsRouter.put('/:pid', adminAuth, async (req, res) => {
+productsRouter.put('/:pid', premiumUserAdminAuth, async (req, res) => {
     try {
         const pid = new mongoose.Types.ObjectId(req.params.pid)
+        const productToReplace = req.body   
+        const user = req.session.user
 
-        const productToReplace = req.body    
-        const updatedProduct = await ProductService.updateProduct(pid, productToReplace)
+        const productToBeReplaced = await ProductService.getProductByID(pid)
+        
+        if (user.role === 'premium') {
+            if (productToBeReplaced[0].owner === user.email) {
+                const updatedProduct = await ProductService.updateProduct(pid, productToReplace)
+                res.send({success: true, updatedProduct})
+            } else {
+                res.send("No eres el owner de este producto, no puedes actualizarlo")
+            }
+        }
 
-        res.send({success: true, updatedProduct})
+        if (user.role === 'admin') {
+            const updatedProduct = await ProductService.updateProduct(pid, productToReplace)
+            res.send({success: true, updatedProduct})
+        }
+
+
         
     } catch (error) {
         logger.error(error);
@@ -80,13 +95,26 @@ productsRouter.put('/:pid', adminAuth, async (req, res) => {
 })
 
 //Delete a product
-productsRouter.delete('/:pid', adminAuth, async (req, res) => {
+productsRouter.delete('/:pid', premiumUserAdminAuth, async (req, res) => {
     try {
         const pid = new mongoose.Types.ObjectId(req.params.pid)
-        
-        const deletedProduct = await ProductService.deleteProduct(pid)
+        const user = req.session.user
 
-        res.send({success: true, deletedProduct})
+        const productToBeDeleted = await ProductService.getProductByID(pid)
+        
+        if (user.role === 'premium') {
+            if (productToBeDeleted[0].owner === user.email) {
+                const deletedProduct = await ProductService.deleteProduct(pid)
+                res.send({success: true, deletedProduct})
+            } else {
+                res.send("No eres el owner de este producto, no puedes eliminarlo")
+            }
+        }
+
+        if (user.role === 'admin') {
+            const deletedProduct = await ProductService.deleteProduct(pid)
+            res.send({success: true, deletedProduct})
+        }
         
     } catch (error) {
         logger.error(error);

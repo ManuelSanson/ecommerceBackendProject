@@ -3,7 +3,7 @@ import mongoose from 'mongoose';
 import { productModel } from '../DAO/mongo/models/productModel.js';
 import { logger } from '../config/logger.js';
 import { CartService } from "../repository/index.js";
-import { loginAuth, adminAuth, userAuth } from '../middlewares/authorizations.js'
+import { loginAuth, adminAuth, usersAuth } from '../middlewares/authorizations.js'
 
 export const viewsRouter = Router()
 
@@ -63,6 +63,6 @@ viewsRouter.get('/realTimeProducts', adminAuth, (req, res) => {
     res.render('realTimeProducts')
 })
 
-viewsRouter.get('/chat', userAuth, (req, res) => {
+viewsRouter.get('/chat', usersAuth, (req, res) => {
     res.render('liveChat')
 })

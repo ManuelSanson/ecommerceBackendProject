@@ -19,6 +19,7 @@ import config from './config/config.js';
 import swaggerJSDoc from 'swagger-jsdoc';
 import swaggerUiExpress from 'swagger-ui-express';
 import { ProductService } from './repository/index.js';
+import { loginAuth } from './middlewares/authorizations.js';
 
 const app = express()
 const httpServer = new HttpServer(app)
@@ -69,8 +70,8 @@ const specs = swaggerJSDoc({
 //Routers
 app.use('/', viewsRouter)
 app.use('/session', sessionRouter)
-app.use('/api/carts/', cartsRouter)
-app.use('/api/products/', productsRouter)
+app.use('/api/carts/', loginAuth, cartsRouter)
+app.use('/api/products/', loginAuth, productsRouter)
 app.use('/mockingproducts/', mockProductsRouter)
 app.use('/resetPassword', resetPasswordRouter)
 app.use('/apidocs', swaggerUiExpress.serve, swaggerUiExpress.setup(specs))

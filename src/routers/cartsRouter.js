@@ -2,7 +2,7 @@ import { Router } from "express";
 import mongoose from "mongoose";
 import { logger } from '../config/logger.js';
 import { CartService, ProductService, TicketService } from "../repository/index.js";
-import { userAuth } from "../middlewares/authorizations.js";
+import { usersAuth } from "../middlewares/authorizations.js";
 import bcrypt from 'bcrypt';
 
 export const cartsRouter = Router()
@@ -69,14 +69,31 @@ cartsRouter.put('/:cid', async (req, res) => {
 })
 
 //Add a product to a cart
-cartsRouter.post('/:cid/product/:pid', userAuth, async (req, res) => {
+cartsRouter.post('/:cid/product/:pid', usersAuth, async (req, res) => {
     try {
         const cid = new mongoose.Types.ObjectId(req.params.cid)
         const pid = new mongoose.Types.ObjectId(req.params.pid)
+        const user = req.session.user
 
-        const productToCart = await CartService.addProductToCart(cid, pid)
+        const productToBeAdded = await ProductService.getProductByID(pid)
 
-        res.send({success: true, productToCart})
+        if (user.role === 'premium') {
+            if (productToBeAdded[0].owner === user.email) {
+                res.send("Eres el owner de este producto, no puedes agregarlo al carrito")
+            } else {
+                const productToCart = await CartService.addProductToCart(cid, pid)
+
+                res.send({success: true, productToCart})
+            }
+        }
+
+        if (user.role === 'user') {
+            const productToCart = await CartService.addProductToCart(cid, pid)
+
+            res.send({success: true, productToCart})
+        }
+
+        
     } catch (error) {
         logger.error(error);
         return res.send({success: false, error: 'There is an error'})
