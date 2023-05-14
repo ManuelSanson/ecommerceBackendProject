@@ -25,7 +25,7 @@ export default class UserManager {
         fs.promises.writeFile(this.path, JSON.stringify(data, null, 3))
     }
 
-    async getUsers() {
+    async getAllUsers() {
         const response = await fs.promises.readFile(this.path, "utf-8")
         return JSON.parse(response)
     }
@@ -56,5 +56,25 @@ export default class UserManager {
         const userFound = users.find(user => Number(user.id) === uid)
 
         return userFound
-    } 
+    }
+    
+    async changeUserRole(uid) {
+        const user = await this.getUserByID(uid)
+
+        let role = user.role
+        const userRole = 'user'
+        const premiumRole = 'premium'
+
+        if (role === userRole) {
+            role = premiumRole
+        }
+
+        if (role === premiumRole) {
+            role = userRole
+        }
+
+        user.role = role
+
+        return role
+    }
 }

@@ -11,12 +11,20 @@ export default class Users {
         return await this.dao.createUser(dataToInsert)
     }
 
+    getAllUsers = async () => {
+        return await this.dao.getAllUsers()
+    }
+
     getUserByEmail = async (email) => {
         return await this.dao.getUserByEmail(email)
     }
 
     getUserByID = async (uid) => {
         return await this.dao.getUserByID(uid)
+    }
+
+    changeUserRole = async (uid) => {
+        return await this.dao.changeUserRole(uid)
     }
 
 }
