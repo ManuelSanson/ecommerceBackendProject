@@ -15,8 +15,6 @@ sessionRouter.get('/login-google', passport.authenticate('google', {scope: ['ema
 sessionRouter.get('/googlecallback', passport.authenticate('google', {failureRedirect: '/session/failedlogin'}), async (req, res) => {
     req.session.user = req.user
 
-    req.session.role = (req.user?.email === 'adminCoder@coder.com') ? 'admin' : 'user'
-    
     res.redirect('/products')
 })
 
@@ -26,15 +24,11 @@ sessionRouter.get('/login', async (req, res) => {
 })
 
 sessionRouter.post('/login', passport.authenticate('login', {failureRedirect: '/session/failedlogin'}), async (req, res) => {
-    const { email } = req.body
-
     if (!req.user) {
         return res.status(400).send('Error en username y/o password')
     }
 
     req.session.user = req.user
-
-    req.session.role = (email === 'adminCoder@coder.com') ? 'admin' : 'user'
     
     res.redirect('/products')
 })
