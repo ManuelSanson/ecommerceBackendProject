@@ -1,13 +1,13 @@
 import passport from 'passport';
 import local from 'passport-local';
-import { Users } from '../DAO/factory.js';
 import { createHash, isValidPassword } from '../utils.js';
 import { keys } from '../keys.js';
 import GoogleStrategy from 'passport-google-oauth20';
 import { logger } from './logger.js';
+import { UserService } from '../repository/index.js';
+
 
 const localStrategy = local.Strategy
-const usersService = new Users()
 
 const initializePassport = () => {
 
@@ -20,7 +20,7 @@ const initializePassport = () => {
         },
         async (request, accessToken, refreshToken, profile, done) => {
             try {
-                const user = await usersService.getUserByEmail(profile._json.email)
+                const user = await UserService.getUserByEmail(profile._json.email)
 
                 if (user) {
                     logger.warning('Ya existe un usuario registrado con este email');
@@ -34,8 +34,7 @@ const initializePassport = () => {
                     password: ''
                 }
 
-                //const result = await userModel.create(newUser)
-                const result = await usersService.createUser(newUser)
+                const result = await UserService.createUser(newUser)
 
                 return done(null, result)
             } catch (error) {
@@ -51,7 +50,7 @@ const initializePassport = () => {
         async (req, username, password, done) => {
             const { firstName, lastName, age, email } = req.body
             try {
-                const user = await usersService.getUserByEmail(username)
+                const user = await UserService.getUserByEmail(username)
 
                 if (user) {
                     logger.warning('Ya existe un usuario registrado con este email');
@@ -66,8 +65,7 @@ const initializePassport = () => {
                     password: createHash(password)
                 }
 
-                //const result = await userModel.create(newUser)
-                const result = await usersService.createUser(newUser)
+                const result = await UserService.createUser(newUser)
 
                 return done(null, result)
 
@@ -81,7 +79,7 @@ const initializePassport = () => {
         { usernameField: 'email' },
         async(username, password, done) => {
             try {
-                const user = await usersService.getUserByEmail(username)
+                const user = await UserService.getUserByEmail(username)
 
                 if (!user) {
                     logger.error('No existe este usuario');
@@ -104,8 +102,7 @@ const initializePassport = () => {
         done(null, user._id)
     })
     passport.deserializeUser(async (id, done) => {
-        //const user = await userModel.findById(id)
-        const user = await usersService.getUserByID(id)
+        const user = await UserService.getUserByID(id)
         done(null, user)
     })
 }
