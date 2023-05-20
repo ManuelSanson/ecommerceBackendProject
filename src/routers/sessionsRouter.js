@@ -1,6 +1,7 @@
 import { Router } from "express";
 import passport from "passport";
 import { logger } from '../config/logger.js';
+import { UserService } from "../repository/index.js";
 
 export const sessionRouter = Router()
 
@@ -14,6 +15,8 @@ sessionRouter.get('/login-google', passport.authenticate('google', {scope: ['ema
 
 sessionRouter.get('/googlecallback', passport.authenticate('google', {failureRedirect: '/session/failedlogin'}), async (req, res) => {
     req.session.user = req.user
+
+    await UserService.updateLastConnection(req.user._id)
 
     res.redirect('/products')
 })
@@ -30,6 +33,8 @@ sessionRouter.post('/login', passport.authenticate('login', {failureRedirect: '/
 
     req.session.user = req.user
     
+    await UserService.updateLastConnection(req.user._id)
+    
     res.redirect('/products')
 })
 
@@ -41,9 +46,13 @@ sessionRouter.get('/failedlogin', async (req, res) => {
 
 //Logout
 sessionRouter.get('/logout', async (req, res) => {
+    req.session.user = req.user
+
+    await UserService.updateLastConnection(req.user._id)
+
     req.session.destroy(err => {
         if (err) {
-            res.send('No puede loguearse')
+            res.send('No puede desloguearse')
         } else {
         res.redirect('/session/logins')
         }
@@ -74,7 +83,8 @@ sessionRouter.get('/current', async (req, res) => {
 
     const userDetails = {
         firstName: user.firstName,
-        email: user.email
+        email: user.email,
+        lastConnection: user.lastConnection
     }
 
     res.send(userDetails)

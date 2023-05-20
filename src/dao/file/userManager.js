@@ -77,4 +77,20 @@ export default class UserManager {
 
         return role
     }
+
+    uploadDocument = async (uid, document) => {
+        const user = await this.getUserByID(uid)
+
+        user.documents.push(document[0])
+
+        return user.documents
+    }
+
+    updateLastConnection = async (uid) => {
+        const user = await this.getUserByID(uid)
+
+        user.lastConnection = new Date().toLocaleDateString()
+
+        return user.lastConnection
+    }
 }

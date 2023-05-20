@@ -27,4 +27,11 @@ export default class Users {
         return await this.dao.changeUserRole(uid)
     }
 
+    uploadDocument = async (uid, document) => {
+        return await this.dao.uploadDocument(uid, document)
+    }
+
+    updateLastConnection = async (uid) => {
+        return await this.dao.updateLastConnection(uid)
+    }
 }

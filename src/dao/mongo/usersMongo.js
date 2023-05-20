@@ -48,4 +48,24 @@ export default class Users {
         return role
     }
 
+    uploadDocument = async (uid, document) => {
+        const user = await userModel.findOne({_id: uid})
+
+        user.documents.push(document[0])
+
+        await user.save()
+
+        return user.documents
+    }
+
+    updateLastConnection = async (uid) => {
+        const user = await userModel.findOne({_id: uid})
+
+        user.lastConnection = new Date()
+
+        await user.save()
+
+        return user.lastConnection
+    }
+
 }
