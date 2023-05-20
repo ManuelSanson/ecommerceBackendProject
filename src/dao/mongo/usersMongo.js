@@ -28,6 +28,12 @@ export default class Users {
         return user
     }
 
+    deleteUser = async (uid) => {
+        const user = await userModel.deleteOne({_id: uid})
+
+        return user
+    }
+
     changeUserRole = async (uid) => {
         const user = await userModel.findOne({_id: uid})
 

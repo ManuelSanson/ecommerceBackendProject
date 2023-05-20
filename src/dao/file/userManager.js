@@ -57,8 +57,24 @@ export default class UserManager {
 
         return userFound
     }
+
+    async deleteUser(uid) {
+        const users = await this.getUsers()
+        const userIndex = users.findIndex(user => Number(user.id) === uid)
+
+        if (userIndex === -1) {
+            return {error: 'User not found'}
+        }
+
+        const deletedUsers = users.splice(userIndex, 1)
+
+        this.#writeFile(users)
+
+        return deletedUsers[0]
+    }
     
     async changeUserRole(uid) {
+        const users = await this.getUsers()
         const user = await this.getUserByID(uid)
 
         let role = user.role
@@ -75,13 +91,18 @@ export default class UserManager {
 
         user.role = role
 
+        this.#writeFile(users)
+
         return role
     }
 
     uploadDocument = async (uid, document) => {
+        const users = await this.getUsers()
         const user = await this.getUserByID(uid)
 
         user.documents.push(document[0])
+
+        this.#writeFile(users)
 
         return user.documents
     }

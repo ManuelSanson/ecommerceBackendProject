@@ -23,6 +23,10 @@ export default class Users {
         return await this.dao.getUserByID(uid)
     }
 
+    deleteUser = async (uid) => {
+        return await this.dao.deleteUser(uid)
+    }
+
     changeUserRole = async (uid) => {
         return await this.dao.changeUserRole(uid)
     }
