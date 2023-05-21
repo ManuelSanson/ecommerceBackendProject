@@ -3,6 +3,8 @@ import mongoose from "mongoose";
 import { logger } from '../config/logger.js';
 import { ProductService } from "../repository/index.js";
 import { premiumUserAdminAuth } from "../middlewares/authorizations.js";
+import config from "../config/config.js";
+import nodemailer from 'nodemailer';
 
 export const productsRouter = Router()
 
@@ -39,21 +41,27 @@ productsRouter.get('/:pid', async (req, res) => {
 //Create a product
 productsRouter.post('/', premiumUserAdminAuth, async (req, res) => {
     try {
-        const {title, description, code, price, stock, category, thumbnails, owner} = req.body
+        const user = req.session.user
+        const {title, description, code, price, stock, category, thumbnails} = req.body
 
         if (!title || !description || !code || !price || !stock || !category) {
             return res.send({success: false, error: 'These fields are required'})
-        } 
-
+        }        
+        
         const products = await ProductService.getProducts()
-        const newProduct = {title, description, code, price, stock, category, thumbnails, owner}
+        const newProduct = {title, description, code, price, stock, category, thumbnails}
+        
+        if (user.role === 'premium') {
+            newProduct.owner = user.email
+        }
         
         const existsCodeInProduct = products.some(p => p.code === newProduct.code)
-
+        
         if (existsCodeInProduct) {
             return res.send({success: false, error: 'Code cannot be repeated'})
         }
-
+        
+        
         await ProductService.addProduct(newProduct)
         
         return res.send({success: true, newProduct})
@@ -101,6 +109,37 @@ productsRouter.delete('/:pid', premiumUserAdminAuth, async (req, res) => {
         const user = req.session.user
 
         const productToBeDeleted = await ProductService.getProductByID(pid)
+
+        if (productToBeDeleted[0].owner !== 'admin') {
+            const transporter = nodemailer.createTransport({
+                service: 'gmail',
+                port: 587,
+                type: 'PLAIN',
+                auth: {
+                    user: config.mailUser,
+                    pass: config.mailPass
+                },
+                tls: {
+                rejectUnauthorized: false
+                }
+            });
+        
+            const mailOptions = {
+                from: config.mailUser,
+                to: productToBeDeleted[0].owner,
+                subject: 'Producto eliminado',
+                html: `
+                <p>Tu producto ${productToBeDeleted[0].title} ha sido eliminado</p>
+                `,
+            };
+        
+            transporter.sendMail(mailOptions, (error, info) => {
+                if (error) {
+                    logger.error(error);
+                }
+                logger.info('Email sent: ' + info.response);
+            });
+        }
         
         if (user.role === 'premium') {
             if (productToBeDeleted[0].owner === user.email) {
