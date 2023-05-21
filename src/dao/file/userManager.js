@@ -1,5 +1,6 @@
 import fs from 'fs';
 import { logger } from '../../config/logger.js';
+import nodemailer from 'nodemailer';
 
 export default class UserManager {
     
@@ -71,6 +72,47 @@ export default class UserManager {
         this.#writeFile(users)
 
         return deletedUsers[0]
+    }
+
+    deleteInactiveUsers = async () => {
+        const users = await this.getUsers()
+        const currentDate = new Date()
+
+        const usersToBeDeleted = users.filter(user => user.lastConnection && (Math.abs(currentDate - user.lastConnection) / 36e5) >= 48).map(user => {
+            const transporter = nodemailer.createTransport({
+                service: 'gmail',
+                port: 587,
+                type: 'PLAIN',
+                auth: {
+                    user: config.mailUser,
+                    pass: config.mailPass
+                },
+                tls: {
+                rejectUnauthorized: false
+                }
+            });
+        
+            const mailOptions = {
+                from: config.mailUser,
+                to: user.email,
+                subject: 'Eliminación de cuenta',
+                html: `
+                <p>Debido a tu inactividad en las últimas 48 horas, hemos eliminado tu cuenta.</p>
+                <p>Para registrarte nuevamente, haz click <a href="http://localhost:8080/session/register">aquí</a>. </p>
+                `,
+            }
+        
+            transporter.sendMail(mailOptions, (error, info) => {
+                if (error) {
+                    logger.error(error)
+                }
+                logger.info('Email sent: ' + info.response)
+            })
+
+            return this.deleteUser(user.id)
+        })
+
+        return usersToBeDeleted
     }
     
     async changeUserRole(uid) {

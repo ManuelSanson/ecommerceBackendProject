@@ -7,7 +7,7 @@ export default class UserDTO {
         this.email = user.email || ""
         this.password = user.password || ""
         this.age = user.age || ""
-        this.role = user.role || user
+        this.role = user.role || "user"
         this.documents = user.documents || []
         this.lastConnection = user.lastConnection || null
     }
