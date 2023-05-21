@@ -48,7 +48,9 @@ sessionRouter.get('/failedlogin', async (req, res) => {
 sessionRouter.get('/logout', async (req, res) => {
     req.session.user = req.user
 
-    await UserService.updateLastConnection(req.user._id)
+    if (req.user) {
+        await UserService.updateLastConnection(req.user._id)
+    }
 
     req.session.destroy(err => {
         if (err) {
@@ -84,6 +86,7 @@ sessionRouter.get('/current', async (req, res) => {
     const userDetails = {
         firstName: user.firstName,
         email: user.email,
+        role: user.role,
         lastConnection: user.lastConnection
     }
 
