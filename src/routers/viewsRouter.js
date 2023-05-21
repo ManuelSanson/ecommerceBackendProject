@@ -7,6 +7,10 @@ import { loginAuth, adminAuth, usersAuth } from '../middlewares/authorizations.j
 
 export const viewsRouter = Router()
 
+viewsRouter.get('/', (req, res) => {
+    res.render('welcome')
+})
+
 viewsRouter.get('/products', loginAuth, async (req, res) => {
     const limit = req.query?.limit || 10
     const page = req.query?.page || 1

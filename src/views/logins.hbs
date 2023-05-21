@@ -1,4 +1,32 @@
-<ul>
-    <li> <a href="/session/login"> Login con tu cuenta </a> </li>
-    <li> <a href="/session/login-google"> Login con Google </a> </li>
-</ul>
+<main class="container mt-5">
+    <h1 class="text-center">Iniciar sesión</h1>
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-body">
+                    <form action="/session/logins" method="post">
+                        <div class="mb-3">
+                            <label for="email" class="form-label">Email</label>
+                            <input type="email" class="form-control" name="email" placeholder="Ingresa tu email">
+                        </div>
+                        <div class="mb-3">
+                            <label for="password" class="form-label">Contraseña</label>
+                            <input type="password" class="form-control" name="password" placeholder="Ingresa tu contraseña">
+                        </div>
+                        <button type="submit" class="btn btn-primary">Iniciar sesión</button>
+                    </form>
+                    <hr>
+                    <p class="text-center">O</p>
+                    <div class="text-center">
+                    <a href="/session/login-google" class="btn btn-info">Iniciar sesión con Google</a>
+                    </div>
+                    <hr>
+                    <p class="text-center">O</p>
+                    <div class="text-center">
+                    <a href="/session/register" class="btn btn-info">Registrarse</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>

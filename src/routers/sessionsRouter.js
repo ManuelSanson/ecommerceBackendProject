@@ -5,11 +5,6 @@ import { UserService } from "../repository/index.js";
 
 export const sessionRouter = Router()
 
-//Choose how to login 
-sessionRouter.get('/logins', async (req, res) => {
-    res.render('logins', {})
-})
-
 //Login with google
 sessionRouter.get('/login-google', passport.authenticate('google', {scope: ['email', 'profile']}), async (req, res) => {})
 
@@ -21,12 +16,13 @@ sessionRouter.get('/googlecallback', passport.authenticate('google', {failureRed
     res.redirect('/products')
 })
 
-//Login with account
-sessionRouter.get('/login', async (req, res) => {
-    res.render('login', {})
+//Choose how to login
+sessionRouter.get('/logins', async (req, res) => {
+    res.render('logins', {})
 })
 
-sessionRouter.post('/login', passport.authenticate('login', {failureRedirect: '/session/failedlogin'}), async (req, res) => {
+//Login with account
+sessionRouter.post('/logins', passport.authenticate('login', {failureRedirect: '/session/failedlogin'}), async (req, res) => {
     if (!req.user) {
         return res.status(400).send('Error en username y/o password')
     }
@@ -67,7 +63,7 @@ sessionRouter.get('/register', async (req, res) => {
 })
 
 sessionRouter.post('/create', passport.authenticate('register', {failureRedirect: '/session/failedregister'}), async (req, res) => {
-    res.redirect('/session/login')
+    res.redirect('/session/logins')
 })
 
 //Failed register
