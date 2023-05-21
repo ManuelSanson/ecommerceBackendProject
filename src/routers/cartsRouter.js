@@ -4,6 +4,8 @@ import { logger } from '../config/logger.js';
 import { CartService, ProductService, TicketService } from "../repository/index.js";
 import { usersAuth } from "../middlewares/authorizations.js";
 import bcrypt from 'bcrypt';
+import config from "../config/config.js";
+import nodemailer from 'nodemailer';
 
 export const cartsRouter = Router()
 
@@ -196,9 +198,39 @@ cartsRouter.post('/:cid/purchase', async (req, res) => {
 
     const purchaseTicket = await TicketService.createTicket({
         code: bcrypt.genSaltSync(10),
-        purchaseDateTime: new Date().toLocaleDateString(),
+        purchaseDateTime: new Date(),
         amount: totalPrice,
         purchaser: user.email
+    })
+
+    const transporter = nodemailer.createTransport({
+        service: 'gmail',
+        port: 587,
+        type: 'PLAIN',
+        auth: {
+            user: config.mailUser,
+            pass: config.mailPass
+        },
+        tls: {
+        rejectUnauthorized: false
+        }
+    })
+
+    const mailOptions = {
+        from: config.mailUser,
+        to: user.email,
+        subject: 'Confirmación de compra',
+        html: `
+        <p>Gracias por tu compra</p>
+        <p>Tu compra ha sido confirmada</p>
+        `,
+    }
+
+    transporter.sendMail(mailOptions, (error, info) => {
+        if (error) {
+            logger.error(error)
+        }
+        logger.info('Email sent: ' + info.response)
     })
 
     res.send(purchaseTicket)
