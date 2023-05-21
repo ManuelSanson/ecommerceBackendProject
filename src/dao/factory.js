@@ -9,17 +9,6 @@ export let Messages
 export let Tickets
 
 switch (config.persistence) {
-    case 'MEMORY':
-        logger.info('Memory persistence');
-        const { default: CartsMemory} = await import('./memory/cartsMemoryController.js')
-        Carts = CartsMemory
-        const { default: ProductsMemory} = await import('./memory/productsMemoryController.js')
-        Products = ProductsMemory
-        const { default: UsersMemory} = await import('./memory/usersMemoryController.js')
-        Users = UsersMemory
-        const { default: MessagesMemory} = await import('./memory/messagesMemoryController.js')
-        Messages = MessagesMemory
-        break;
     case 'FILE':
         logger.info('FS persitence');
         const { default: CartsFile} = await import('../DAO/file/cartManager.js')
