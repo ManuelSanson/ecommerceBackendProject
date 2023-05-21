@@ -3,6 +3,7 @@ import mongoose from "mongoose";
 import { logger } from '../config/logger.js';
 import { UserService } from "../repository/index.js";
 import { cpUpload } from "../config/multerConfig.js";
+import { adminAuth } from "../middlewares/authorizations.js";
 
 export const usersRouter = Router()
 
@@ -10,7 +11,19 @@ export const usersRouter = Router()
 usersRouter.get('/', async (req, res) => {
     try {
         const users = await UserService.getAllUsers()
-        res.send({success: true, payload: users })
+        
+        let userDetails = []
+        users.map(user => {
+            const details = {
+                firstName: user.firstName,
+                email: user.email,
+                role: user.role,
+                lastConnection: user.lastConnection
+            }
+            userDetails.push(details)
+        })
+        
+        res.send({success: true, payload: userDetails })
     } catch (error) {
         logger.error(error);
         return res.send({success: false, error: 'There is an error'})
@@ -18,7 +31,7 @@ usersRouter.get('/', async (req, res) => {
 })
 
 //Get user by email
-usersRouter.get('/email', async (req, res) => {
+usersRouter.get('/email', adminAuth, async (req, res) => {
     try {
         const email = req.body.email
         
@@ -35,8 +48,21 @@ usersRouter.get('/email', async (req, res) => {
     }
 })
 
+//Delete inactive users
+usersRouter.delete('/deleteUsers', adminAuth, async (req, res) => {
+    try {
+        const deletedUsers = await UserService.deleteInactiveUsers()
+        
+        res.send({success: true, deletedUsers})
+    } catch (error) {
+        logger.error(error);
+        return res.send({success: false, error: 'There is an error'})
+    }
+
+})
+
 //Get user by ID
-usersRouter.get('/:uid', async (req, res) => {
+usersRouter.get('/:uid', adminAuth, async (req, res) => {
     try {
         const uid = new mongoose.Types.ObjectId(req.params.uid)
         
@@ -53,8 +79,29 @@ usersRouter.get('/:uid', async (req, res) => {
     }
 })
 
+//Delete a user
+usersRouter.delete('/:uid', adminAuth, async (req, res) => {
+    try {
+        const uid = new mongoose.Types.ObjectId(req.params.uid)
+        
+        const user = await UserService.getUserByID(uid)
+        
+        if (!user) {
+            return res.send({success: false, error: 'User not found'})
+        }
+
+        const userToBeDeleted = await UserService.deleteUser(uid)
+        
+        res.send({success: true, userToBeDeleted})
+
+    } catch (error) {
+        logger.error(error);
+        return res.send({success: false, error: 'There is an error'})
+    }
+})
+
 //Change user's role
-usersRouter.post('/:uid', async (req, res) => {
+usersRouter.post('/:uid', adminAuth, async (req, res) => {
     try {
         const uid = new mongoose.Types.ObjectId(req.params.uid)
         
