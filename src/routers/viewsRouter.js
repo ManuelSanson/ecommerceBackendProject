@@ -37,7 +37,7 @@ viewsRouter.get('/products', loginAuth, async (req, res) => {
 
     const data = await productModel.paginate(filter, options)
     const user = req.session.user
-
+    
     const front_pagination = []
     for (let i = 1; i <= data.totalPages; i++) {
         front_pagination.push({
@@ -46,7 +46,9 @@ viewsRouter.get('/products', loginAuth, async (req, res) => {
         })
     }
 
-    res.render('home', {data, user, front: {pagination: front_pagination}})
+    const cart = await CartService.getCartByUserId(req.user._id)
+
+    res.render('home', {data, user, cart,  front: {pagination: front_pagination}})
 })
 
 viewsRouter.get('/cart/:cid', loginAuth, async (req, res) => {
@@ -61,6 +63,14 @@ viewsRouter.get('/cart/:cid', loginAuth, async (req, res) => {
         logger.error(error);
         return res.send({success: false, error: 'There is an error'})
     }
+})
+
+viewsRouter.get('/cart', loginAuth, async (req, res) => {
+    const user = req.session.user
+    const cart = await CartService.getCartByUserId(req.user._id)
+    
+    
+    res.render('cart', {user, cart})
 })
 
 viewsRouter.get('/realTimeProducts', adminAuth, (req, res) => {

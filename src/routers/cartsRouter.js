@@ -43,7 +43,7 @@ cartsRouter.get('/:cid', async (req, res) => {
 cartsRouter.post('/', async (req, res) => {
     try {
         const products = []
-        const newCart = {products}
+        const newCart = {products, userId: req.session.user._id}
 
         await CartService.addCart(newCart)
 
@@ -85,14 +85,16 @@ cartsRouter.post('/:cid/product/:pid', usersAuth, async (req, res) => {
             } else {
                 const productToCart = await CartService.addProductToCart(cid, pid)
 
-                res.send({success: true, productToCart})
+                // res.send({success: true, productToCart})
+                res.redirect('/cart')
             }
         }
 
         if (user.role === 'user') {
             const productToCart = await CartService.addProductToCart(cid, pid)
 
-            res.send({success: true, productToCart})
+            // res.send({success: true, productToCart})
+            res.redirect('/cart')
         }
 
         
@@ -233,6 +235,8 @@ cartsRouter.post('/:cid/purchase', async (req, res) => {
         logger.info('Email sent: ' + info.response)
     })
 
-    res.send(purchaseTicket)
+    await CartService.deleteAllProductsFromCart(cid)
+
+    res.render('successfulPurchase')
 })
 

@@ -8,6 +8,7 @@ const cartSchema = new mongoose.Schema({
         "quantity": Number
     }],
     "id": mongoose.SchemaTypes.ObjectId,
+    "userId": mongoose.SchemaTypes.ObjectId,
 })
 
 export const cartModel = mongoose.model(cartCollection, cartSchema)

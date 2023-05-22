@@ -1,7 +1,7 @@
 import { Router } from "express";
 import passport from "passport";
 import { logger } from '../config/logger.js';
-import { UserService } from "../repository/index.js";
+import { CartService, UserService } from "../repository/index.js";
 
 export const sessionRouter = Router()
 
@@ -12,6 +12,15 @@ sessionRouter.get('/googlecallback', passport.authenticate('google', {failureRed
     req.session.user = req.user
 
     await UserService.updateLastConnection(req.user._id)
+
+    let cart = await CartService.getCartByUserId(req.user._id)
+
+    if(!cart) {
+        cart = await CartService.addCart({
+            products: [],
+            userId: req.user._id,
+        })
+    }
 
     res.redirect('/products')
 })
