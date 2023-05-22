@@ -39,6 +39,15 @@ sessionRouter.post('/logins', passport.authenticate('login', {failureRedirect: '
     req.session.user = req.user
     
     await UserService.updateLastConnection(req.user._id)
+
+    let cart = await CartService.getCartByUserId(req.user._id)
+
+    if(!cart) {
+        cart = await CartService.addCart({
+            products: [],
+            userId: req.user._id,
+        })
+    }
     
     res.redirect('/products')
 })
