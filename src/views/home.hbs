@@ -1,56 +1,107 @@
 <main>
-    <a href="/session/logout"> Cerrar sesion </a>
-    <br>
-    {{#if user}}
-        <h2>Hi, {{user.firstName}}!</h2>
-    {{/if}}
-    <br>
-    <h1 class="title"> Products list</h1>
+    <header>
+        {{#if user}}
+            <div class="d-flex justify-content-between p-3">
+                <div class="d-flex align-items-center">
+                <h5>Hola, {{user.firstName}}!</h5>
+                <a href="/cart"> <img class="icons" src="https://res.cloudinary.com/diqry3ihg/image/upload/v1684721323/FunkoPopStore/60992_geuvgt.png" alt="Cart icon"></a>
+                </div>
+                <div>
+                    <button type="button" class="btn btn-danger">
+                        <a class="link" href="/session/logout"> Cerrar sesión </a>
+                    </button>
+                </div>
+            </div>
+        {{/if}}
+    </header>
 
-    <nav aria-label="Page navigation example">
-        <ul class="pagination">
-            <li class="page-item"><a class="page-link" href="#">5</a></li>
-            <li class="page-item"><a class="page-link" href="#">10</a></li>
-            <li class="page-item"><a class="page-link" href="#">15</a></li>
-        </ul>
-    </nav>
 
-    <table class="productList table table-striped">
-        <thead>
-            <tr>
-                <th scope="col">Title</th>
-                <th scope="col">Description</th>
-                <th scope="col">Price</th>
-                <th scope="col">Picture</th>
-            </tr>
-        </thead>
-        <tbody>
+    <section>
+        <h1 class="text-center p-2"> Funko Store </h1>
+        <h2 class="text-center p-2"> Nuestros productos </h2>
+    </section>
+
+    <section class="mt-5 d-flex justify-content-between align-items-center">
+        <div class="d-flex flex-column align-items-center">
+            <h6>Mostrar resultados por página</h6>
+            <nav aria-label="Page navigation example">
+                <ul class="pagination">
+                    <li class="page-item"><a class="page-link" href="/products?limit=5">5</a></li>
+                    <li class="page-item"><a class="page-link" href="/products?limit=10">10</a></li>
+                    <li class="page-item"><a class="page-link" href="/products?limit=15">15</a></li>
+                </ul>
+            </nav>
+        </div>
+        <div class="d-flex flex-column align-items-center">
+            <h6>Buscar</h6>
+            <input type="text" class="form-control" id="searchInput" placeholder="Buscar Funko Store">
+        </div>
+        <div class="d-flex flex-column align-items-center">
+            <div class="dropdown mb-3">
+                <button class="btn btn-light border dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    Organizar por
+                </button>
+                <ul class="dropdown-menu" aria-labelledby="sortDropdown">
+                    <li><a class="dropdown-item" href="/products?query=category:movies">Cine</a></li>
+                    <li><a class="dropdown-item" href="/products?query=category:music">Música</a></li>
+                    <li><a class="dropdown-item" href="/products?query=category:tvseries">Serie de televisión</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="d-flex flex-column align-items-center">
+            <div class="dropdown mb-3">
+                <button class="btn btn-light border dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    Ordenar por precio
+                </button>
+                <ul class="dropdown-menu" aria-labelledby="sortDropdown">
+                    <li><a class="dropdown-item" href="/products?sortBy=price:asc">De menor a mayor</a></li>
+                    <li><a class="dropdown-item" href="/products?sortBy=price:desc">De mayor a menor</a></li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <div class="mt-3 d-flex justify-content-center">
+        <button type="button" class="btn btn-secondary">
+                <a class="link" href="/products"> Limpiar filtros </a>
+            </button>
+    </div>
+
+    <div class="container m-5">
+        <div class="d-flex flex-wrap justify-content-center">
             {{#if data.docs.length}}
             {{#each data.docs}}
-            <tr>
-                <td scope="row">{{this.title}}</td>
-                <td>{{this.description}}</td>
-                <td>{{this.price}}</td>
-                <td><img height="72px" width="72px" src={{this.thumbnail}}/></td>
-            </tr>
+            <div class="card productCard">
+                <div class="productImgContainer">
+                    <img src="{{this.thumbnails}}" class="card-img-top img-thumbnail w-50" alt="Product Image">
+                </div>
+
+                <div class="card-body">
+                    <h5 class="card-title">{{this.title}}</h5>
+                    <p class="card-text">{{this.description}}</p>
+                    <p class="card-text">USD {{this.price}}</p>
+                    <form class="d-flex justify-content-center" action="api/carts/{{../this.cart._id}}/product/{{this._id}}" method="post">
+                        <button class="btn btn-success">Agregar al carrito</button>
+                    </form>
+                </div>
+            </div>
             {{/each}}
             {{/if}}
-        </tbody>
-    </table>  
+        </div>
+    </div>
 
     <nav aria-label="Page navigation example">
         <ul class="pagination">
             <li class="page-item {{#if data.hasPrevPage}}{{else}} disabled {{/if}}">
-                <a class="page-link" href="/products?page={{data.prevPage}}" aria-label="Previous">
+                <a class="page-link" href="/products?limit={{data.limit}}&page={{data.prevPage}}" aria-label="Previous">
                     <span aria-hidden="true">&laquo;</span>
                 </a>
             </li>
-
             {{#each front.pagination}}
-                <li class="page-item {{#if this.active}} active {{/if}}"><a class="page-link" href="/products?page={{this.page}}">{{this.page}}</a></li>
+                <li class="page-item {{#if this.active}} active {{/if}}"><a class="page-link" href="/products?limit={{data.limit}}&page={{this.page}}">{{this.page}}</a></li>
             {{/each}}
             <li class="page-item {{#if data.hasNextPage}}{{else}} disabled {{/if}}">
-                <a class="page-link" href="/products?page={{data.nextPage}}" aria-label="Next">
+                <a class="page-link" href="/products?limit={{data.limit}}&page={{data.nextPage}}" aria-label="Next">
                     <span aria-hidden="true">&raquo;</span>
                 </a>
             </li>
