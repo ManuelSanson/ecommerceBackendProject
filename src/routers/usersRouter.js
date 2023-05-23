@@ -8,7 +8,7 @@ import { adminAuth } from "../middlewares/authorizations.js";
 export const usersRouter = Router()
 
 //Get all users
-usersRouter.get('/', async (req, res) => {
+usersRouter.get('/', adminAuth, async (req, res) => {
     try {
         const users = await UserService.getAllUsers()
         
