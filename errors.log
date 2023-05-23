@@ -2415,3 +2415,43 @@ error: text error
 [2023-05-23T02:38:32.792Z] info: Mongo connection
 [2023-05-23T02:38:34.151Z] info: Server running on port 8080
 [2023-05-23T02:49:43.630Z] info: Email sent: 250 2.0.0 OK  1684810182 ef8-20020a056808234800b00394627263a0sm3184408oib.57 - gsmtp
+[2023-05-23T02:52:34.127Z] info: Mongo connection
+[2023-05-23T02:52:36.485Z] info: Server running on port 8080
+[2023-05-23T02:56:36.086Z] info: Mongo connection
+[2023-05-23T02:56:37.754Z] info: Server running on port 8080
+[2023-05-23T13:14:19.425Z] info: Mongo connection
+[2023-05-23T13:14:22.481Z] info: Server running on port 8080
+[2023-05-23T13:16:42.701Z] info: Mongo connection
+[2023-05-23T13:16:45.587Z] info: Server running on port 8080
+[2023-05-23T13:18:53.382Z] info: Mongo connection
+[2023-05-23T13:18:55.668Z] info: Server running on port 8080
+[2023-05-23T13:21:02.916Z] info: Mongo connection
+[2023-05-23T13:21:04.894Z] info: Server running on port 8080
+[2023-05-23T13:24:00.480Z] info: Mongo connection
+[2023-05-23T13:24:01.855Z] info: Server running on port 8080
+[2023-05-23T13:27:22.791Z] info: Mongo connection
+[2023-05-23T13:27:24.713Z] info: Server running on port 8080
+[2023-05-23T13:29:28.622Z] info: Mongo connection
+[2023-05-23T13:29:30.666Z] info: Server running on port 8080
+[2023-05-23T13:29:54.237Z] error: Argument passed in must be a string of 12 bytes or a string of 24 hex characters or an integer
+[2023-05-23T13:30:09.128Z] error: Cannot read properties of undefined (reading 'profileImage')
+[2023-05-23T13:30:28.376Z] info: Mongo connection
+[2023-05-23T13:30:30.959Z] info: Server running on port 8080
+[2023-05-23T13:30:40.906Z] info: Mongo connection
+[2023-05-23T13:30:42.554Z] info: Server running on port 8080
+[2023-05-23T13:30:45.169Z] error: Cannot read properties of undefined (reading 'profileImage')
+[2023-05-23T13:36:18.083Z] info: Email sent: 250 2.0.0 OK  1684848978 v11-20020a056870954b00b00195e943f958sm3591304oal.1 - gsmtp
+[2023-05-23T13:37:48.562Z] info: Mongo connection
+[2023-05-23T13:37:49.901Z] info: Server running on port 8080
+[2023-05-23T13:38:24.249Z] info: Mongo connection
+[2023-05-23T13:38:27.641Z] info: Server running on port 8080
+[2023-05-23T13:40:16.740Z] info: Mongo connection
+[2023-05-23T13:40:17.983Z] info: Server running on port 8080
+[2023-05-23T13:40:54.142Z] info: Mongo connection
+[2023-05-23T13:40:55.957Z] info: Server running on port 8080
+[2023-05-23T13:41:07.363Z] info: Mongo connection
+[2023-05-23T13:41:09.307Z] info: Server running on port 8080
+[2023-05-23T13:51:24.343Z] info: Email sent: 250 2.0.0 OK  1684849884 q18-20020a9d6312000000b006a64043ed69sm3407438otk.56 - gsmtp
+[2023-05-23T13:54:24.674Z] error: data and salt arguments required
+[2023-05-23T13:58:00.205Z] info: Mongo connection
+[2023-05-23T13:58:01.414Z] info: Server running on port 8080
