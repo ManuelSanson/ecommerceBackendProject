@@ -21,6 +21,11 @@ viewsRouter.get('/products', loginAuth, async (req, res) => {
 
     const regex = new RegExp(search, 'i')
     const filter = search && field ? { [field]: regex } : {}
+
+    if(req.query.name) {
+        const regex2 = new RegExp(req.query.name, 'i')
+        filter.title = regex2
+    }
     
     const sort = sortingField && order ? { [sortingField]: order === 'desc' ? -1 : 1 } : {}
 
