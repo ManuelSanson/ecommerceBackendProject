@@ -11,7 +11,6 @@ import session from 'express-session';
 import MongoStore from 'connect-mongo';
 import passport from 'passport';
 import initializePassport from './config/passportConfig.js';
-//import { Messages } from './DAO/factory.js';
 import { logger } from './config/logger.js';
 import { resetPasswordRouter } from './routers/resetPasswordRouter.js';
 import config from './config/config.js';
@@ -95,7 +94,6 @@ app.use('/apidocs', swaggerUiExpress.serve, swaggerUiExpress.setup(specs))
 httpServer.listen(config.port, "0.0.0.0", () => logger.info(`Server running on port ${config.port}`))
 
 //Messages
-//const messagesService = new Messages()
 let messages = []
 io.on('connection', async (socket) => {
     logger.info(`New client connected, id: ${socket.id}`);

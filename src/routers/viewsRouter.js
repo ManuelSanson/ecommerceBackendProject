@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import mongoose from 'mongoose';
-import { productModel } from '../DAO/mongo/models/productModel.js';
+import { productModel } from '../../src/DAO/mongo/models/productModel.js';
 import { logger } from '../config/logger.js';
 import { CartService } from "../repository/index.js";
 import { adminAuth, loginAuth, usersAuth } from '../middlewares/authorizations.js'
