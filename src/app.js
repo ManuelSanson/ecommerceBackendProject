@@ -12,7 +12,6 @@ import MongoStore from 'connect-mongo';
 import passport from 'passport';
 import initializePassport from './config/passportConfig.js';
 import { Messages } from './DAO/factory.js';
-import { mockProductsRouter } from './routers/mockProductsRouter.js';
 import { logger } from './config/logger.js';
 import { resetPasswordRouter } from './routers/resetPasswordRouter.js';
 import config from './config/config.js';
@@ -90,7 +89,6 @@ app.use('/session', sessionRouter)
 app.use('/api/carts/', loginAuth, cartsRouter)
 app.use('/api/products/', loginAuth, productsRouter)
 app.use('/api/users/', usersRouter)
-app.use('/mockingproducts/', mockProductsRouter)
 app.use('/resetPassword', resetPasswordRouter)
 app.use('/apidocs', swaggerUiExpress.serve, swaggerUiExpress.setup(specs))
 
