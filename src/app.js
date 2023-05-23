@@ -92,7 +92,8 @@ app.use('/api/users/', usersRouter)
 app.use('/resetPassword', resetPasswordRouter)
 app.use('/apidocs', swaggerUiExpress.serve, swaggerUiExpress.setup(specs))
 
-httpServer.listen(config.port, "0.0.0.0", () => logger.info(`Server running on port ${config.port}`))
+//httpServer.listen(config.port, "0.0.0.0", () => logger.info(`Server running on port ${config.port}`))
+app.listen(config.port, "0.0.0.0", () => logger.info(`Server running on port ${config.port}`))
 
 //Messages
 const messagesService = new Messages()
