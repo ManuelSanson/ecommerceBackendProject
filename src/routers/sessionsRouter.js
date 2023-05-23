@@ -55,7 +55,7 @@ sessionRouter.post('/logins', passport.authenticate('login', {failureRedirect: '
 //Failed login
 sessionRouter.get('/failedlogin', async (req, res) => {
     logger.error('failed strategy');
-    res.send({error: 'Failed'})
+    res.render('login-registrationError')
 })
 
 //Logout
@@ -87,7 +87,7 @@ sessionRouter.post('/create', passport.authenticate('register', {failureRedirect
 //Failed register
 sessionRouter.get('/failedregister', async (req, res) => {
     logger.error('failed strategy');
-    res.send({error: 'Failed'})
+    res.render('login-registrationError')
 })
 
 //See user
