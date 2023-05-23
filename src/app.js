@@ -21,6 +21,7 @@ import swaggerUiExpress from 'swagger-ui-express';
 import { ProductService } from './repository/index.js';
 import { loginAuth } from './middlewares/authorizations.js';
 import { usersRouter } from './routers/usersRouter.js';
+import methodOverride from 'method-override';
 
 const app = express()
 const httpServer = new HttpServer(app)
@@ -42,11 +43,26 @@ app.use(session({
 initializePassport()
 app.use(passport.initialize())
 app.use(passport.session())
+app.use(methodOverride('_method'))
 
 app.engine('hbs', handlebars.engine({
     extname: '.hbs',
     defaultLayout: 'main.hbs'
 }))
+
+const hbs = handlebars.create({});
+
+hbs.handlebars.registerHelper('calculateTotal', function(price, quantity) {
+    return price * quantity;
+})
+
+hbs.handlebars.registerHelper('calculateCartTotal', function(cartItems) {
+    let total = 0;
+    for (let i = 0; i < cartItems.length; i++) {
+    total += cartItems[i]._id.price * cartItems[i].quantity;
+    }
+    return total;
+})
 
 app.use(express.static('public/'))
 
@@ -77,17 +93,6 @@ app.use('/api/users/', usersRouter)
 app.use('/mockingproducts/', mockProductsRouter)
 app.use('/resetPassword', resetPasswordRouter)
 app.use('/apidocs', swaggerUiExpress.serve, swaggerUiExpress.setup(specs))
-
-app.get('/loggerTest', (req, res) => {
-    logger.warning('This is a warning message.')
-    logger.error('This is an error message.')
-    logger.info('This is an info message.')
-    logger.http('This is an http message.')
-    logger.debug('This is a debug message.')
-    logger.fatal('This is a fatal message.')
-
-    res.send("Logs generated")
-});
 
 httpServer.listen(config.port, () => logger.info(`Server running on port ${config.port}`))
 
