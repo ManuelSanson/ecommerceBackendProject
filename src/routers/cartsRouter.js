@@ -83,18 +83,23 @@ cartsRouter.post('/:cid/product/:pid', usersAuth, async (req, res) => {
             if (productToBeAdded[0].owner === user.email) {
                 res.send("Eres el owner de este producto, no puedes agregarlo al carrito")
             } else {
-                const productToCart = await CartService.addProductToCart(cid, pid)
-
-                // res.send({success: true, productToCart})
-                res.redirect('/cart')
+                if (productToBeAdded[0].stock >= 1){
+                    await CartService.addProductToCart(cid, pid)
+                    res.redirect('/cart')
+                } else {
+                    res.render('nostock')
+                }
             }
         }
 
         if (user.role === 'user') {
-            const productToCart = await CartService.addProductToCart(cid, pid)
+            if (productToBeAdded[0].stock >= 1){
+                await CartService.addProductToCart(cid, pid)
 
-            // res.send({success: true, productToCart})
-            res.redirect('/cart')
+                res.redirect('/cart')
+            } else {
+                res.render('nostock')
+            }
         }
 
         
@@ -110,10 +115,17 @@ cartsRouter.put('/:cid/product/:pid', async (req, res) => {
         const cid = new mongoose.Types.ObjectId(req.params.cid)
         const pid = new mongoose.Types.ObjectId(req.params.pid)
         const {quantity} = req.body
+        const product = await ProductService.getProductByID(pid)
+
+        if (product[0].stock > quantity) {
+            await CartService.updateProductQuantity(cid, pid, quantity)
+            
+            res.redirect('/cart')
+        } else {
+            res.render('nostock')
+        }
         
-        const updatedProductQuantity = await CartService.updateProductQuantity(cid, pid, quantity)
     
-        res.send({success: true, updatedProductQuantity})
     } catch (error) {
         logger.error(error);
         return res.send({success: false, error: 'There is an error'})
@@ -126,9 +138,9 @@ cartsRouter.delete('/:cid/product/:pid', async (req, res) => {
         const cid = new mongoose.Types.ObjectId(req.params.cid)
         const pid = new mongoose.Types.ObjectId(req.params.pid)
         
-        const deletedProduct = await CartService.deleteProductFromCart(cid, pid)
+        await CartService.deleteProductFromCart(cid, pid)
     
-        res.send({success: true, deletedProduct})
+        res.redirect('/cart')
     } catch (error) {
         logger.error(error);
         return res.send({success: false, error: 'There is an error'})
@@ -140,9 +152,9 @@ cartsRouter.delete('/:cid', async (req, res) => {
     try {
         const cid = new mongoose.Types.ObjectId(req.params.cid)
         
-        const deletedProducts = await CartService.deleteAllProductsFromCart(cid)
+        await CartService.deleteAllProductsFromCart(cid)
     
-        res.send({success: true, deletedProducts})
+        res.redirect('/cart')
     } catch (error) {
         logger.error(error);
         return res.send({success: false, error: 'There is an error'})
@@ -224,7 +236,7 @@ cartsRouter.post('/:cid/purchase', async (req, res) => {
         subject: 'Confirmación de compra',
         html: `
         <p>Gracias por tu compra</p>
-        <p>Tu compra ha sido confirmada</p>
+        <p>Tu compra en Funko Store por ${totalPrice} ha sido confirmada</p>
         `,
     }
 
@@ -237,6 +249,5 @@ cartsRouter.post('/:cid/purchase', async (req, res) => {
 
     await CartService.deleteAllProductsFromCart(cid)
 
-    res.render('successfulPurchase')
+    res.render('successfulPurchase', {purchaseTicket})
 })
-

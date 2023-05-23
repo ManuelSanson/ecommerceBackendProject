@@ -1,21 +1,92 @@
 <main>
-    <a href="/session/logout"> Cerrar sesion </a>
-    <br>
-    {{#if user}}
-        <h2>Hi, {{user.firstName}}!</h2>
-    {{/if}}
-    <br>
-    <h1>Cart</h1>
+    <header class="d-flex justify-content-between p-3">
+        {{#if user}}
+            <h5>Hola, {{user.firstName}}!</h5>
+            <button type="button" class="btn btn-danger">
+                <a class="link" href="/session/logout"> Cerrar sesión </a>
+            </button>
+        {{/if}}
+    </header>
+    
+    <section>
+        <h1 class="text-center p-2"> Funko Store </h1>
+        <h2 class="text-center p-2"> Tu carrito </h2>
+    </section>
 
-    {{#if cart}}
-    {{productsInCart}}
-    {{productsInCart.quantity}}
-        {{#each productsInCart}}
-            <div>
-                {{this._id.title}}
-            </div>
-        {{/each}}
+    <div class="container">
+        <table class="table align-middle">
+        <thead class="text-center">
+            <tr>
+                <th scope="col">Producto</th>
+                <th scope="col">Cantidad</th>
+                <th scope="col">Precio</th>
+                <th scope="col"></th>
+                <th scope="col">Total</th>
+            </tr>
+        </thead>
+        <tbody>
+            {{#each cart.products}}
+            <tr>
+                <td>
+                    <img src="{{this._id.thumbnails}}" alt="{{this._id.title}}" width="50">
+                    <span>{{this._id.title}}</span>
+                </td>
+                <td class="text-center" style="width: 200px">
+                    <form action="api/carts/{{../this.cart._id}}/product/{{this._id._id}}?_method=PUT" method="post" class=" d-flex flex-column justify-content-center">
+                        <input type="number" min="1" value="{{this.quantity}}" name="quantity" >
+                        <button type="submit" class="btn btn-info btn-sm">
+                            Actualizar cantidad
+                        </button>
+                    </form>
+                    
+                </td>
+                <td class="text-center">{{this._id.price}}</td>
+                <td class="text-center">
+                    <form action="api/carts/{{../this.cart._id}}/product/{{this._id._id}}?_method=DELETE" method="post">
+                        <input type="hidden" name="_method" value="delete">
+                        <button type="submit" class="btn btn-danger btn-sm">
+                        <img class="icons" src="https://res.cloudinary.com/diqry3ihg/image/upload/v1684723974/FunkoPopStore/3964013_x1gfaw.png" alt="Basket icon">
+                        </button>    
+                    </form>
+                </td>
+                <td class="text-center">{{calculateTotal this._id.price this.quantity}}</td>
+            </tr>
+            {{/each}}
+        </tbody>
+        </table>
+        {{#if cart.products}}
+            <section class="d-flex justify-content-between mt-3">
+                <div class="d-flex align-items-center">
+                    <h3 class="p-2">Total</h3>
+                    <h2 class="p-2"> USD {{calculateCartTotal cart.products}} </h2>
+                </div>
+                <div>
+                    <form action="api/carts/{{cart._id}}?_method=DELETE" method="post">
+                            <input type="hidden" name="_method" value="delete">
+                            <button type="submit" class="btn btn-danger"> 
+                                <img class="icons" src="https://res.cloudinary.com/diqry3ihg/image/upload/v1684723974/FunkoPopStore/3964013_x1gfaw.png" alt="Basket icon">
+                                Vaciar carrito
+                            </button>    
+                    </form>
+                </div>
+
+            </section>
+        {{/if}}
+    </div>
+
+    <div class="text-center mt-5">
+        <a href="/products" class="btn btn-success">Seguir comprando</a>
+    </div>
+
+    {{#if cart.products}}
+        <form class="text-center m-5" action="api/carts/{{cart._id}}/purchase" method="post">
+            <button class="btn btn-info">Terminar compra</button>
+        </form>
     {{/if}}
+    
 
 
 </main>
+
+<script src="handlebars.js"></script>
+<script src="js/main.js"></script>
