@@ -1,8 +1,7 @@
 import { Router } from 'express';
 import mongoose from 'mongoose';
-import { productModel } from '../../src/DAO/mongo/models/productModel.js';
 import { logger } from '../config/logger.js';
-import { CartService } from "../repository/index.js";
+import { CartService, ProductService } from "../repository/index.js";
 import { adminAuth, loginAuth, usersAuth } from '../middlewares/authorizations.js'
 
 export const viewsRouter = Router()
@@ -40,7 +39,8 @@ viewsRouter.get('/products', loginAuth, async (req, res) => {
         sort
     }
 
-    const data = await productModel.paginate(filter, options)
+    const data = await ProductService.paginate(filter, options)
+    //await productModel.paginate(filter, options)
     const user = req.session.user
     
     const front_pagination = []

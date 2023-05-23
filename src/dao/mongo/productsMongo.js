@@ -34,4 +34,8 @@ export default class Products {
 
         return deletedProduct
     }
+
+    paginate = async (filter, options) => {
+        return productModel.paginate(filter, options)
+    }
 }

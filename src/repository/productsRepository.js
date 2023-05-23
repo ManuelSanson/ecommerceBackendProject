@@ -26,4 +26,8 @@ export default class ProductRepository {
     deleteProduct = async (pid) => {
         return await this.dao.deleteProduct(pid)
     }
+
+    paginate = async (filter, options) => {
+        return await this.dao.paginate(filter, options)
+    }
 }
