@@ -1,17 +1,18 @@
 import { Router } from "express";
 import nodemailer from 'nodemailer';
 import bcrypt from 'bcrypt';
-import userModel from "../DAO/mongo/models/userModel.js";
 import { logger } from "../config/logger.js";
 import config from "../config/config.js";
 import jwt from 'jsonwebtoken';
+import { UserService } from "../repository/index.js";
 
 export const resetPasswordRouter = Router()
 
 resetPasswordRouter.post('/', async (req, res) => {
     const email = req.body.email;
 
-    const user = await userModel.findOne({email});
+    const user = await UserService.getUserByEmail(email)
+    
     if (!user) {
         return res.send('Usuario no encontrado')
     }
