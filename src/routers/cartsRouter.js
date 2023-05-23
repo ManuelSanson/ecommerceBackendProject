@@ -236,7 +236,7 @@ cartsRouter.post('/:cid/purchase', async (req, res) => {
         subject: 'Confirmación de compra',
         html: `
         <p>Gracias por tu compra</p>
-        <p>Tu compra en Funko Store por ${totalPrice} ha sido confirmada</p>
+        <p>Tu compra en Funko Store por USD ${totalPrice} ha sido confirmada</p>
         `,
     }
 
