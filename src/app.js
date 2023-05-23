@@ -11,13 +11,13 @@ import session from 'express-session';
 import MongoStore from 'connect-mongo';
 import passport from 'passport';
 import initializePassport from './config/passportConfig.js';
-import { Messages } from './DAO/factory.js';
+//import { Messages } from './DAO/factory.js';
 import { logger } from './config/logger.js';
 import { resetPasswordRouter } from './routers/resetPasswordRouter.js';
 import config from './config/config.js';
 import swaggerJSDoc from 'swagger-jsdoc';
 import swaggerUiExpress from 'swagger-ui-express';
-import { ProductService } from './repository/index.js';
+import { MessageService, ProductService } from './repository/index.js';
 import { loginAuth } from './middlewares/authorizations.js';
 import { usersRouter } from './routers/usersRouter.js';
 import methodOverride from 'method-override';
@@ -92,11 +92,10 @@ app.use('/api/users/', usersRouter)
 app.use('/resetPassword', resetPasswordRouter)
 app.use('/apidocs', swaggerUiExpress.serve, swaggerUiExpress.setup(specs))
 
-//httpServer.listen(config.port, "0.0.0.0", () => logger.info(`Server running on port ${config.port}`))
-app.listen(config.port, "0.0.0.0", () => logger.info(`Server running on port ${config.port}`))
+httpServer.listen(config.port, "0.0.0.0", () => logger.info(`Server running on port ${config.port}`))
 
 //Messages
-const messagesService = new Messages()
+//const messagesService = new Messages()
 let messages = []
 io.on('connection', async (socket) => {
     logger.info(`New client connected, id: ${socket.id}`);
@@ -118,7 +117,7 @@ io.on('connection', async (socket) => {
     socket.on('message', async data => {
         messages.push(data) 
         io.emit('messageLogs', messages)
-        await messagesService.createMessage(messages)
+        await MessageService.createMessage(messages)
     })
     
     socket.on('authenticated', async user => {
