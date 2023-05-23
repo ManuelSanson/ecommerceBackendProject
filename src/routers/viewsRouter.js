@@ -3,7 +3,7 @@ import mongoose from 'mongoose';
 import { productModel } from '../DAO/mongo/models/productModel.js';
 import { logger } from '../config/logger.js';
 import { CartService } from "../repository/index.js";
-import { loginAuth, adminAuth, usersAuth } from '../middlewares/authorizations.js'
+import { adminAuth, loginAuth, usersAuth } from '../middlewares/authorizations.js'
 
 export const viewsRouter = Router()
 
@@ -56,7 +56,7 @@ viewsRouter.get('/products', loginAuth, async (req, res) => {
     res.render('home', {data, user, cart,  front: {pagination: front_pagination}})
 })
 
-viewsRouter.get('/cart/:cid', loginAuth, async (req, res) => {
+viewsRouter.get('/cart/:cid', async (req, res) => {
     try {
         const cid = new mongoose.Types.ObjectId(req.params.cid)
         const cart = await CartService.getCartByID(cid)
@@ -70,7 +70,7 @@ viewsRouter.get('/cart/:cid', loginAuth, async (req, res) => {
     }
 })
 
-viewsRouter.get('/cart', loginAuth, async (req, res) => {
+viewsRouter.get('/cart', async (req, res) => {
     const user = req.session.user
     const cart = await CartService.getCartByUserId(req.user._id)
     

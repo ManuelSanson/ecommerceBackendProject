@@ -3,7 +3,7 @@ import mongoose from "mongoose";
 import { logger } from '../config/logger.js';
 import { UserService } from "../repository/index.js";
 import { cpUpload } from "../config/multerConfig.js";
-import { adminAuth } from "../middlewares/authorizations.js";
+import { adminAuth, loginAuth, usersAuth } from "../middlewares/authorizations.js";
 
 export const usersRouter = Router()
 
@@ -101,7 +101,7 @@ usersRouter.delete('/:uid', adminAuth, async (req, res) => {
 })
 
 //Change user's role
-usersRouter.post('/:uid', adminAuth, async (req, res) => {
+usersRouter.post('/:uid', loginAuth, async (req, res) => {
     try {
         const uid = new mongoose.Types.ObjectId(req.params.uid)
         
@@ -139,7 +139,7 @@ usersRouter.post('/:uid', adminAuth, async (req, res) => {
     }
 })
 
-usersRouter.post('/:uid/documents', cpUpload, async (req, res) => {
+usersRouter.post('/:uid/documents', cpUpload, usersAuth, async (req, res) => {
     try {
         const uid = new mongoose.Types.ObjectId(req.params.uid)
         

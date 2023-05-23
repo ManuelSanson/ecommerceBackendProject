@@ -55,7 +55,7 @@ cartsRouter.post('/', async (req, res) => {
 })
 
 //Update a cart
-cartsRouter.put('/:cid', async (req, res) => {
+cartsRouter.put('/:cid', usersAuth, async (req, res) => {
     try {
         const cid = new mongoose.Types.ObjectId(req.params.cid)
 
@@ -110,7 +110,7 @@ cartsRouter.post('/:cid/product/:pid', usersAuth, async (req, res) => {
 })
 
 //Update a product's quantity
-cartsRouter.put('/:cid/product/:pid', async (req, res) => {
+cartsRouter.put('/:cid/product/:pid', usersAuth, async (req, res) => {
     try {
         const cid = new mongoose.Types.ObjectId(req.params.cid)
         const pid = new mongoose.Types.ObjectId(req.params.pid)
@@ -133,7 +133,7 @@ cartsRouter.put('/:cid/product/:pid', async (req, res) => {
 })
 
 //Delete a product from a cart
-cartsRouter.delete('/:cid/product/:pid', async (req, res) => {
+cartsRouter.delete('/:cid/product/:pid', usersAuth, async (req, res) => {
     try {
         const cid = new mongoose.Types.ObjectId(req.params.cid)
         const pid = new mongoose.Types.ObjectId(req.params.pid)
@@ -148,7 +148,7 @@ cartsRouter.delete('/:cid/product/:pid', async (req, res) => {
 })
 
 //Delete all products from a cart
-cartsRouter.delete('/:cid', async (req, res) => {
+cartsRouter.delete('/:cid', usersAuth, async (req, res) => {
     try {
         const cid = new mongoose.Types.ObjectId(req.params.cid)
         
@@ -162,7 +162,7 @@ cartsRouter.delete('/:cid', async (req, res) => {
 })
 
 //Purchase
-cartsRouter.post('/:cid/purchase', async (req, res) => {
+cartsRouter.post('/:cid/purchase', usersAuth, async (req, res) => {
     const cid = new mongoose.Types.ObjectId(req.params.cid)
 
     const cart = await CartService.getCartByID(cid)

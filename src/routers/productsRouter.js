@@ -111,6 +111,14 @@ productsRouter.delete('/:pid', premiumUserAdminAuth, async (req, res) => {
         const productToBeDeleted = await ProductService.getProductByID(pid)
 
         if (productToBeDeleted[0].owner !== 'admin') {
+
+            if (user.role === 'premium') {
+                if (productToBeDeleted[0].owner !== user.email) {
+                    res.send("No eres el owner de este producto, no puedes eliminarlo")
+                    return
+                }
+            }
+
             const transporter = nodemailer.createTransport({
                 service: 'gmail',
                 port: 587,
