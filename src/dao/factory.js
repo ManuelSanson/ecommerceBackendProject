@@ -1,6 +1,7 @@
 import mongoose from 'mongoose';
 import { logger } from '../config/logger.js';
 import config from '../config/config.js';
+import CartsMongo from '../dao/mongo/cartsMongo.js'
 
 export let Carts
 export let Products
@@ -31,7 +32,7 @@ switch (config.persistence) {
                 process.exit()
             }
         })
-        const { default: CartsMongo} = await import('../dao/mongo/cartsMongo.js')
+        //const { default: CartsMongo} = await import('../dao/mongo/cartsMongo.js')
         Carts = CartsMongo
         const { default: ProductsMongo} = await import('../dao/mongo/productsMongo.js')
         Products = ProductsMongo
