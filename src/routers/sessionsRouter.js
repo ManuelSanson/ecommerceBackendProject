@@ -2,6 +2,7 @@ import { Router } from "express";
 import passport from "passport";
 import { logger } from '../config/logger.js';
 import { CartService, UserService } from "../repository/index.js";
+import { loginAuth } from "../middlewares/authorizations.js";
 
 export const sessionRouter = Router()
 
@@ -91,7 +92,7 @@ sessionRouter.get('/failedregister', async (req, res) => {
 })
 
 //See user
-sessionRouter.get('/current', async (req, res) => {
+sessionRouter.get('/current', loginAuth,  async (req, res) => {
     const user = req.session.user
     if (!user) {
         res.send('No hay usuario logueado')
