@@ -1,4 +1,5 @@
-import { Carts, Messages, Products, Users, Tickets } from '../DAO/factory.js';
+//import { Carts, Messages, Products, Users, Tickets } from '../DAO/factory.js';
+import { Carts, Messages, Products, Users, Tickets } from '../DAO/constMongo.js';
 import CartRepository from './cartsRepository.js';
 import MessageRepository from './messagesRepository.js';
 import ProductRepository from './productsRepository.js';
