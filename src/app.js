@@ -20,6 +20,7 @@ import { MessageService, ProductService } from './repository/index.js';
 import { loginAuth } from './middlewares/authorizations.js';
 import { usersRouter } from './routers/usersRouter.js';
 import methodOverride from 'method-override';
+import mongoose from 'mongoose';
 
 const app = express()
 const httpServer = new HttpServer(app)
@@ -80,6 +81,15 @@ const specs = swaggerJSDoc({
         }
     },
     apis: [`${__dirname}/docs/**/*.yaml`]
+})
+
+logger.info('Mongo connection');
+mongoose.set('strictQuery', false)
+mongoose.connect(config.mongoURI, {useNewUrlParser: true, useUnifiedTopology: true,dbName: config.mongoDBname}, error => {
+    if (error) {
+        logger.fatal('Cannot connect to db', error);
+        process.exit()
+    }
 })
 
 //Routers
