@@ -1,4 +1,4 @@
-import UserDTO from "../DAO/DTO/usersDTO.js";
+import UserDTO from "../dao/dto/usersDTO.js";
 
 export default class Users {
 
