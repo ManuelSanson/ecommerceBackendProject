@@ -1,4 +1,4 @@
-import TicketDTO from "../dao/dto/ticketsDTO.js";
+import TicketDTO from "../dao1/dto/ticketsDTO.js";
 
 export default class Tickets {
 
